@@ -1,0 +1,7 @@
+parameters:
+#    azine_geo_blocking.example.class: Azine\GeoBlockingBundle\Example
+
+services:
+#    azine_geo_blocking.example:
+#        class: %azine_geo_blocking.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]
