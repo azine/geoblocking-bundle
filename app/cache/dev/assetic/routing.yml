@@ -1,0 +1,5 @@
+_assetic:
+    resource: .
+    type: assetic
+_app:
+    resource: /media/data/Azine_Project/symfony-sandbox/app/config/routing_dev.yml
