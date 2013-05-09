@@ -1,7 +1,0 @@
-[Thu May 09 16:59:58 2013] [error] [client 127.0.0.1] PHP Fatal error:  Class 'Azine\\GeoBlockingBundle\\AzineGeoBlockingBundle' not found in /media/data/Azine_Project/symfony-sandbox/app/AppKernel.php on line 22
-[Thu May 09 16:59:58 2013] [error] [client 127.0.0.1] PHP Stack trace:
-[Thu May 09 16:59:58 2013] [error] [client 127.0.0.1] PHP   1. {main}() /media/data/Azine_Project/symfony-sandbox/web/app_dev.php:0
-[Thu May 09 16:59:58 2013] [error] [client 127.0.0.1] PHP   2. Symfony\\Component\\HttpKernel\\Kernel->handle() /media/data/Azine_Project/symfony-sandbox/web/app_dev.php:26
-[Thu May 09 16:59:58 2013] [error] [client 127.0.0.1] PHP   3. Symfony\\Component\\HttpKernel\\Kernel->boot() /media/data/Azine_Project/symfony-sandbox/app/bootstrap.php.cache:409
-[Thu May 09 16:59:58 2013] [error] [client 127.0.0.1] PHP   4. Symfony\\Component\\HttpKernel\\Kernel->initializeBundles() /media/data/Azine_Project/symfony-sandbox/app/bootstrap.php.cache:377
-[Thu May 09 16:59:58 2013] [error] [client 127.0.0.1] PHP   5. AppKernel->registerBundles() /media/data/Azine_Project/symfony-sandbox/app/bootstrap.php.cache:543

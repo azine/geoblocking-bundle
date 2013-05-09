@@ -1,4 +1,0 @@
-azine_geo_blocking:
-    resource: "@AzineGeoBlockingBundle/Resources/config/routing.yml"
-    prefix:   /
-
