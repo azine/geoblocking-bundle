@@ -22,5 +22,5 @@
         "psr-0": { "Azine\\GeoBlockingBundle": "" }
     },
     "minimum-stability": "dev",
-    "target-dir": "azine\\Azine\\GeoBlockingBundle"
+    "target-dir": "AzineGeoBlockingBundle"
 }
