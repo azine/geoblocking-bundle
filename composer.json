@@ -19,7 +19,7 @@
         "symfony/framework-bundle": ">=2.1"
     },
     "autoload": {
-        "psr-0": { "Azine\\GeoBlockingBundle": "" }
+        "psr-0": { "Azine\\GeoBlockingBundle": "AzineGeoBlockingBundle" }
     },
     "minimum-stability": "dev",
     "target-dir": "AzineGeoBlockingBundle"
