@@ -9,7 +9,7 @@ It adds an kernel event listener that listens for "kernel.request" events and us
 ## Requirements
 There are no explicit requirements. BUT the default setup makes two assumptions:
 
-#### 1. the php geoip-module is enabled on your server
+##### 1. the php geoip-module is enabled on your server
    
 "GeoIpLookupAdapter" uses the [php function geoip_country_code_by_name($address)](http://www.php.net/manual/en/function.geoip-country-code3-by-name.php) 
 to find the country of the given address.
@@ -18,7 +18,7 @@ To use the default implementation, this function (provided by the php geoip modu
 
 Alternatively you can implement and use your own GeoLookupAdapter that uses an other way to find the country for the given ip (see below).
 
-#### 2. you use fosuserbundle for authentication/usermanagment
+##### 2. you use fosuserbundle for authentication/usermanagment
 
 Most often you would like that registered users can access your site from wherever they are. So there should be a option to login and for logged 
 in users no pages should be blocked. As a lot of people (including me) use the fosuserbundle for user managment, the default configuration is set 
