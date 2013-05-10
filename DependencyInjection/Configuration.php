@@ -23,7 +23,7 @@ class Configuration implements ConfigurationInterface
         $rootNode
         	->children()
 	        	->booleanNode("enabled")						->defaultTrue()->end()
-	        	->scalarNode('access_denied_view')				->defaultValue('AzineGeoBlockingBundle::anonAccessDenied.html.twig')->end()
+	        	->scalarNode('access_denied_view')				->defaultValue('AzineGeoBlockingBundle::accessDenied.html.twig')->end()
 	        	->booleanNode('block_anonymouse_users_only')	->defaultTrue()->end()
 	        	->scalarNode('login_route')						->defaultValue('fos_user_security_login')->end()
 	        	->scalarNode('lookup_adapter')					->defaultValue('azine_geo_blocking.lookup.adapter')->end()

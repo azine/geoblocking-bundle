@@ -47,8 +47,8 @@ class GeoBlockingKernelRequestListener
 		$this->routeBlacklist 	= $this->container->getParameter('azine_geo_blocking_routes_blacklist');
 
 		$this->lookUpAdapter 	= $this->container->getParameter('azine_geo_blocking_lookup_adapter');
-		$this->allowPrivateIPs 	= $this->container->getParameter('allow_private_ips');
-		$this->blockedPageView 	= $this->container->getParameter('azine_geo_blocking_access_denied_view', 'AzineGeoBlockingBundle::accessDenied.html.twig');
+		$this->allowPrivateIPs 	= $this->container->getParameter('azine_geo_blocking_allow_private_ips');
+		$this->blockedPageView 	= $this->container->getParameter('azine_geo_blocking_access_denied_view');
 		$this->loginRoute	 	= $this->container->getParameter('azine_geo_blocking_login_route');
 
 	}
