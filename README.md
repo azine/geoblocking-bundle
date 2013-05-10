@@ -105,7 +105,7 @@ azine_geo_blocking:
 
 
 ## Alternative GeoIpLookupAdapter
-You can create your own implementation of [Adapter\GeoIpLookupAdapterInterface.php](Adapter\GeoIpLookupAdapterInterface.php), define it as service in your service.yml or service.xml and set the service-id as lookup_adapter in the config.yml:
+You can create your own implementation of [Adapter\GeoIpLookupAdapterInterface.php](tree\master\Adapter\GeoIpLookupAdapterInterface.php), define it as service in your service.yml or service.xml and set the service-id as lookup_adapter in the config.yml:
 ```
 // app/config/config.yml
 azine_geo_blocking:
