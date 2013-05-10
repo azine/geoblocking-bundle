@@ -20,9 +20,27 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('azine_geo_blocking');
 
-        // Here you should define the parameters that are allowed to
-        // configure your bundle. See the documentation linked above for
-        // more information on that topic.
+        $rootNode
+        	->children()
+	        	->booleanNode("enabled")						->defaultTrue()->end()
+	        	->scalarNode('access_denied_view')				->defaultValue('AzineGeoBlockingBundle::anonAccessDenied.html.twig')->end()
+	        	->booleanNode('block_anonymouse_users_only')	->defaultTrue()->end()
+	        	->scalarNode('login_route')						->defaultValue('fos_user_security_login')->end()
+	        	->scalarNode('lookup_adapter')					->defaultValue('azine_geo_blocking.lookup.adapter')->end()
+	        	->booleanNode('allow_private_ips')				->defaultTrue()->end()
+	        	->arrayNode('countries')
+		        	->children()
+		        		->variableNode('whitelist')->defaultValue(array('fos_user_security_login', 'fos_user_security_login_check', 'fos_user_security_logout'))->end()
+		        		->variableNode('blacklist')->defaultValue(array())->end()
+	        		->end()
+	        	->end()// end countries
+	        	->arrayNode('routes')
+		        	->children()
+		        		->variableNode('whitelist')->defaultValue(array())->end()
+		        		->variableNode('blacklist')->defaultValue(array())->end()
+	        		->end()
+	        	->end()// end routes
+	        ->end();
 
         return $treeBuilder;
     }

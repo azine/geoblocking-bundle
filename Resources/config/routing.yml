@@ -1,3 +1,0 @@
-azine_geo_blocking_homepage:
-    pattern:  /hello/{name}
-    defaults: { _controller: AzineGeoBlockingBundle:Default:index }
