@@ -82,7 +82,7 @@ azine_geo_blocking:
     routes:
         whitelist:
         	- route_to_allways_allow
-            # Defaults: these defaults work nice with the fosuserbundle defaults
+            # the following three routes work nice with the default routes of the fosuserbundle
             - fos_user_security_login
             - fos_user_security_login_check
             - fos_user_security_logout
