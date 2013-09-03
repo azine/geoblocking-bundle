@@ -41,7 +41,7 @@ class AzineGeoBlockingExtension extends Extension
         $container->setParameter($prefix."countries_blacklist", $config["countries"]["blacklist"]);
         $container->setParameter($prefix."routes_whitelist", $config["routes"]["whitelist"]);
         $container->setParameter($prefix."routes_blacklist", $config["routes"]["blacklist"]);
-        $container->setParameter($prefix."lookup_adapter", $config["lookup_adapter"]);
+        $container->setAlias($prefix."lookup_adapter", $config["lookup_adapter"]);
         $container->setParameter($prefix."allow_private_ips", $config["allow_private_ips"]);
         $container->setParameter($prefix."access_denied_view", $config["access_denied_view"]);
         $container->setParameter($prefix."login_route", $config["login_route"]);

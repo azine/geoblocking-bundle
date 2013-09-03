@@ -6,7 +6,20 @@ services:
             class: Azine\GeoBlockingBundle\EventListener\GeoBlockingKernelRequestListener
             tags:
                 - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
-            arguments: [ @router, @service_container ]  
+            arguments: 
+                templating:        "@templating"
+                lookupAdapter:     "@azine_geo_blocking_lookup_adapter"
+                parameters:
+                    blockAnonOnly:     "%azine_geo_blocking_block_anonymouse_users_only%"
+                    countryWhitelist:  "%azine_geo_blocking_countries_whitelist%"   
+                    countryBlacklist:  "%azine_geo_blocking_countries_blacklist%"
+                    routeWhitelist:    "%azine_geo_blocking_routes_whitelist%"
+                    routeBlacklist:    "%azine_geo_blocking_routes_blacklist%"
+                    allowPrivateIPs:   "%azine_geo_blocking_allow_private_ips%"
+                    blockedPageView:   "%azine_geo_blocking_access_denied_view%"
+                    loginRoute:        "%azine_geo_blocking_login_route%"
+                    enabled:           "%azine_geo_blocking_enabled%"
+            
     azine_geo_blocking.lookup.adapter:  
             class: Azine\GeoBlockingBundle\Adapter\DefaultLookupAdapter      
             

@@ -10,8 +10,7 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
  *
  * To learn more see {@link http://symfony.com/doc/current/cookbook/bundles/extension.html#cookbook-bundles-extension-config-class}
  */
-class Configuration implements ConfigurationInterface
-{
+class Configuration implements ConfigurationInterface{
     /**
      * {@inheritDoc}
      */
@@ -30,14 +29,14 @@ class Configuration implements ConfigurationInterface
 	        	->booleanNode	('allow_private_ips')			->defaultTrue()->info("true | false : also applie the rules to private IPs e.g. 127.0.0.1 or 192.168.xxx.yyy etc.")->end()
 	        	->arrayNode		('countries')->info("only whitelist or blacklist can contain values.")->addDefaultsIfNotSet()
 		        	->children()
-		        		->variableNode('whitelist')->defaultValue(array())->info("e.g. 'CH','FR','DE' etc. => access is allowed to visitors from these countries")->end()
 		        		->variableNode('blacklist')->defaultValue(array())->info("e.g. 'US','CN' etc. => access is denied to visitors from these countries")->end()
+		        		->variableNode('whitelist')->defaultValue(array())->info("e.g. 'CH','FR','DE' etc. => access is allowed to visitors from these countries")->end()
 	        		->end()
 	        	->end()// end countries
 	        	->arrayNode		('routes')->info("only whitelist or blacklist can contain values.")->addDefaultsIfNotSet()
 		        	->children()
-		        		->variableNode('whitelist')->defaultValue(array('fos_user_security_login', 'fos_user_security_login_check', 'fos_user_security_logout'))->info("list of routes, that never should be blocked for access from unliked locations (e.g. the login-routes).")->cannotBeEmpty()->end()
 		        		->variableNode('blacklist')->defaultValue(array())->info("list of routes, that always should be blocked for access from unliked locations.")->end()
+		        		->variableNode('whitelist')->defaultValue(array('fos_user_security_login', 'fos_user_security_login_check', 'fos_user_security_logout'))->info("list of routes, that never should be blocked for access from unliked locations (e.g. the login-routes).")->end()
 	        		->end()
 	        	->end()// end routes
 	        ->end();
