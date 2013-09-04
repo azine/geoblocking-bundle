@@ -6,16 +6,14 @@ use Azine\GeoBlockingBundle\DependencyInjection\AzineGeoBlockingExtension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Yaml\Parser;
 
-class AzineGeoBlockingBundleTest extends \PHPUnit_Framework_TestCase
-{
+class AzineGeoBlockingBundleTest extends \PHPUnit_Framework_TestCase{
 	/** @var ContainerBuilder */
 	protected $configuration;
 
 	/**
 	 * This should not throw an exception
 	 */
-	public function testMinimalConfig()
-	{
+	public function testMinimalConfig(){
 		$loader = new AzineGeoBlockingExtension();
 		$config = $this->getMinimalConfig();
 		$loader->load(array($config), new ContainerBuilder());
@@ -108,8 +106,7 @@ class AzineGeoBlockingBundleTest extends \PHPUnit_Framework_TestCase
 
 
 
-	protected function createFullConfiguration()
-	{
+	protected function createFullConfiguration(){
 		$this->configuration = new ContainerBuilder();
 		$loader = new AzineGeoBlockingExtension();
 		$config = $this->getFullConfig();
@@ -121,8 +118,7 @@ class AzineGeoBlockingBundleTest extends \PHPUnit_Framework_TestCase
 	 * Get the minimal config
 	 * @return array
 	 */
-	protected function getMinimalConfig()
-	{
+	protected function getMinimalConfig(){
 		$yaml = <<<EOF
 # true|false : turn the whole bundle on/off
 enabled:              true
@@ -136,8 +132,7 @@ EOF;
 	/**
 	 * Get a full config for this bundle
 	 */
-	protected function getFullConfig()
-	{
+	protected function getFullConfig(){
 		$yaml = <<<EOF
 # true|false : turn the whole bundle on/off
 enabled:              true
@@ -189,8 +184,7 @@ EOF;
 	 * @param string $value
 	 * @param string $key
 	 */
-	private function assertAlias($value, $key)
-	{
+	private function assertAlias($value, $key){
 		$this->assertEquals($value, (string) $this->configuration->getAlias($key), sprintf('%s alias is correct', $key));
 	}
 
@@ -198,29 +192,25 @@ EOF;
 	 * @param mixed  $value
 	 * @param string $key
 	 */
-	private function assertParameter($value, $key)
-	{
+	private function assertParameter($value, $key){
 		$this->assertEquals($value, $this->configuration->getParameter($key), sprintf('%s parameter is correct', $key));
 	}
 
 	/**
 	 * @param string $id
 	 */
-	private function assertHasDefinition($id)
-	{
+	private function assertHasDefinition($id){
 		$this->assertTrue(($this->configuration->hasDefinition($id) ?: $this->configuration->hasAlias($id)));
 	}
 
 	/**
 	 * @param string $id
 	 */
-	private function assertNotHasDefinition($id)
-	{
+	private function assertNotHasDefinition($id){
 		$this->assertFalse(($this->configuration->hasDefinition($id) ?: $this->configuration->hasAlias($id)));
 	}
 
-	protected function tearDown()
-	{
+	protected function tearDown(){
 		unset($this->configuration);
 	}
 }
