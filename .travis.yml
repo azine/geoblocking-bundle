@@ -12,9 +12,11 @@ env:
 
 
 before_script: 
+    - pecl install geoip
     - composer update --dev --prefer-source
     - composer install
     - composer require symfony/framework-bundle:${SYMFONY_VERSION} --prefer-source
+    
   
 
 script: phpunit -c app  vendor/azine/ --coverage-text
