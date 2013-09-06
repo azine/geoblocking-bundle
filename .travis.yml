@@ -13,7 +13,7 @@ env:
 
 before_script: 
     - pecl install geoip
-    - composer install
+    - composer install --dev
     - composer require symfony/framework-bundle:${SYMFONY_VERSION} --prefer-source
     
   
