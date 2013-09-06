@@ -33,10 +33,3 @@ notifications:
   email: travis@azine-it.ch
 
 
-
-   - sudo mkdir -p /usr/share/GeoIP
-   - sudo mv GeoLiteCity.dat /usr/share/GeoIP/GeoIPCity.dat
-   - pecl install geoip
-+  - composer self-update
-   - composer require symfony/framework-bundle:${SYMFONY_VERSION} --no-update
-   - composer install --dev --prefer-source
