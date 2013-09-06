@@ -12,10 +12,19 @@ env:
 
 
 before_script: 
-    - pecl install geoip
-    - composer install --dev
-    - composer require symfony/framework-bundle:${SYMFONY_VERSION} --prefer-source
-    
+  - sudo apt-get install geoip-bin
+  - sudo apt-get install geoip-database
+  - sudo apt-get install libgeoip-dev
+  - ls -l /usr/share/GeoIP
+  - wget https://github.com/downloads/lunetics/TimezoneBundle/GeoLiteCity.dat.gz
+  - gunzip GeoLiteCity.dat.gz
+  - sudo mkdir -p /usr/share/GeoIP
+  - sudo mv GeoLiteCity.dat /usr/share/GeoIP/GeoIPCity.dat
+  - pecl install geoip
+  - composer self-update
+  - composer require symfony/framework-bundle:${SYMFONY_VERSION} --no-update
+  - composer install --dev --prefer-source 
+  
   
 
 script: phpunit -c app  vendor/azine/ --coverage-text
@@ -25,3 +34,9 @@ notifications:
 
 
 
+   - sudo mkdir -p /usr/share/GeoIP
+   - sudo mv GeoLiteCity.dat /usr/share/GeoIP/GeoIPCity.dat
+   - pecl install geoip
++  - composer self-update
+   - composer require symfony/framework-bundle:${SYMFONY_VERSION} --no-update
+   - composer install --dev --prefer-source
