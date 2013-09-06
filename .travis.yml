@@ -22,7 +22,7 @@ before_script:
   - sudo mv GeoLiteCity.dat /usr/share/GeoIP/GeoIPCity.dat
   - pecl install geoip
   - composer self-update
-  - composer require symfony/framework-bundle:${SYMFONY_VERSION} --no-update
+  - composer require symfony/framework-bundle:${SYMFONY_VERSION} --no-update --dev
   - composer install --dev --prefer-source 
   
   
