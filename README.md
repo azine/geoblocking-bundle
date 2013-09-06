@@ -6,9 +6,8 @@ Symfony2 Bundle that allows you to configure geoblocking access to certain pages
 It adds an kernel event listener that listens for "kernel.request" events and uses the php geoip module to identify the country of origin of the current request and depending on the configuration displays an error-page.
 
 [![Build Status](https://travis-ci.org/azine/geoblocking-bundle.png)](https://travis-ci.org/azine/geoblocking-bundle)
-[![Total Downloads](https://poser.pugx.org/https://github.com/azine/geoblocking-bundle/downloads.png)](https://packagist.org/packages/https://github.com/azine/geoblocking-bundle)
-[![Latest Stable Version](https://poser.pugx.org/https://github.com/azine/geoblocking-bundle/v/stable.png)](https://packagist.org/packages/https://github.com/azine/geoblocking-bundle)
-
+[![Total Downloads](https://poser.pugx.org/azine/geoblocking-bundle/downloads.png)](https://packagist.org/packages/azine/geoblocking-bundle)
+[![Latest Stable Version](https://poser.pugx.org/azine/geoblocking-bundle/v/stable.png)](https://packagist.org/packages/azine/geoblocking-bundle)
 
 ## Requirements
 There are no explicit requirements. BUT the default setup makes two assumptions:
