@@ -25,7 +25,7 @@ class Configuration implements ConfigurationInterface{
 	        	->scalarNode	('access_denied_view')			->defaultValue('AzineGeoBlockingBundle::accessDenied.html.twig')->info("the view to be rendered as 'blocked' page")->end()
 	        	->booleanNode	('block_anonymouse_users_only')	->defaultTrue()->info("block all users or only users that are not logged in yet")->end()
 	        	->scalarNode	('login_route')					->defaultValue('fos_user_security_login')->info("route name to the login-form (only relevant if block_anonymouse_users_only is set to true)")->end()
-	        	->scalarNode	('lookup_adapter')				->defaultValue('azine_geo_blocking.lookup.adapter')->info("id of the lookup-adapter you would like to use")->end()
+	        	->scalarNode	('lookup_adapter')				->defaultValue('azine_geo_blocking.default.lookup.adapter')->info("id of the lookup-adapter you would like to use")->end()
 	        	->booleanNode	('allow_private_ips')			->defaultTrue()->info("true | false : also applie the rules to private IPs e.g. 127.0.0.1 or 192.168.xxx.yyy etc.")->end()
 	        	->arrayNode		('countries')->info("only whitelist or blacklist can contain values.")->addDefaultsIfNotSet()
 		        	->children()

@@ -104,16 +104,6 @@ class AzineGeoBlockingBundleTest extends \PHPUnit_Framework_TestCase{
 
 	}
 
-
-
-	protected function createFullConfiguration(){
-		$this->configuration = new ContainerBuilder();
-		$loader = new AzineGeoBlockingExtension();
-		$config = $this->getFullConfig();
-		$loader->load(array($config), $this->configuration);
-		$this->assertTrue($this->configuration instanceof ContainerBuilder);
-	}
-
 	/**
 	 * Get the minimal config
 	 * @return array
@@ -147,7 +137,7 @@ block_anonymouse_users_only:  true
 login_route:          fos_user_security_login
 
 # id of the lookup-adapter you would like to use
-lookup_adapter:       azine_geo_blocking.lookup.adapter
+lookup_adapter:       azine_geo_blocking.default.lookup.adapter
 
 # true | false : also applie the rules to private IPs e.g. 127.0.0.1 or 192.168.xxx.yyy etc.
 allow_private_ips:    true

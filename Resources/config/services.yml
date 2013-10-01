@@ -20,6 +20,10 @@ services:
                     loginRoute:        "%azine_geo_blocking_login_route%"
                     enabled:           "%azine_geo_blocking_enabled%"
             
-    azine_geo_blocking.lookup.adapter:  
+    azine_geo_blocking.default.lookup.adapter:  
             class: Azine\GeoBlockingBundle\Adapter\DefaultLookupAdapter      
-            
+
+    azine_geo_blocking.maxmind.lookup.adapter:  
+            class: Azine\GeoBlockingBundle\Adapter\MaxmindLookupAdapter      
+            arguments: 
+                container:  "@service_container"
