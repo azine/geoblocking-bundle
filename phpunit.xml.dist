@@ -11,10 +11,6 @@
          syntaxCheck="false"
          bootstrap="Tests/bootstrap.php"
 >
-    <php>
-        <server name="KERNEL_DIR" value="/home/travis/build/azine/geoblocking-bundle/app/" />
-    </php>
-
     <testsuites>
         <testsuite name="Azine/GeoBlockingBundle Test Suite">
             <directory>./Tests</directory>
