@@ -27,6 +27,8 @@ class Configuration implements ConfigurationInterface{
 	        	->scalarNode	('login_route')					->defaultValue('fos_user_security_login')->info("route name to the login-form (only relevant if block_anonymouse_users_only is set to true)")->end()
 	        	->scalarNode	('lookup_adapter')				->defaultValue('azine_geo_blocking.default.lookup.adapter')->info("id of the lookup-adapter you would like to use")->end()
 	        	->booleanNode	('allow_private_ips')			->defaultTrue()->info("true | false : also applie the rules to private IPs e.g. 127.0.0.1 or 192.168.xxx.yyy etc.")->end()
+	        	->variableNode	('ip_whitelist')				->defaultValue(array())->info("List of IPs (or regexp for IPs) you would like to allow. E.g. Search engine crawlers")->end()
+	        	->scalarNode	('logBlockedRequests')			->defaultFalse()->info("true | false : Log a message for blocked request.")->end()
 	        	->arrayNode		('countries')->info("only whitelist or blacklist can contain values.")->addDefaultsIfNotSet()
 		        	->children()
 		        		->variableNode('blacklist')->defaultValue(array())->info("e.g. 'US','CN' etc. => access is denied to visitors from these countries")->end()

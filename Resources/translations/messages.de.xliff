@@ -2,17 +2,17 @@
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
   <file source-language="en" datatype="plaintext" original="file.ext">
     <body>
-      <trans-unit id="1" resname="access.denied.for.anon.user.message">
+      <trans-unit id="1" resname="access.denied.for.anon.user.message.%country%">
         <source>access.denied.for.anon.user.message</source>
-        <target>Der Zugriff auf diesen Service ist von deinem aktuellen Ort nicht erlaubt, ausser du bist bereits ein registrierter Benutzer.</target>
+        <target>Der Zugriff auf diesen Service ist von deinem aktuellen Ort (%country%) nicht erlaubt, ausser du bist bereits ein registrierter Benutzer.</target>
       </trans-unit>
       <trans-unit id="2" resname="access.denied.login.message.%loginUrl%">
         <source>access.denied.login.message.%loginUrl%</source>
         <target><![CDATA[Für registrierte Benutzer: <a href="%loginUrl%">bitte hier einloggen</a>.]]></target>
       </trans-unit>
-      <trans-unit id="3" resname="access.denied.message">
+      <trans-unit id="3" resname="access.denied.message.%country%">
         <source>access.denied.message</source>
-        <target>Der Zugriff auf diesen Service ist von deinem aktuellen Ort nicht erlaubt.</target>
+        <target>Der Zugriff auf diesen Service ist von deinem aktuellen Ort (%country%) nicht erlaubt.</target>
       </trans-unit>
     </body>
   </file>

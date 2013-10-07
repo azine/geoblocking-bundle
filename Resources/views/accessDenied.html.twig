@@ -1,12 +1,12 @@
 {% if loginRoute is defined %}
 <p>
-	{{ 'access.denied.for.anon.user.message' | trans }}
+	{{ 'access.denied.for.anon.user.message.%country%' | trans({'%country%' : country }) }}
 </p>
 <p>
 	{{ 'access.denied.login.message.%loginUrl%' | trans ({'%loginUrl%' : path(loginRoute)}) | raw }}
 </p>
 {% else %}
 <p>
-	{{ 'access.denied.message' | trans }}
+	{{ 'access.denied.message.%country%' | trans({'%country%' : country }) }}
 </p>
 {% endif %}

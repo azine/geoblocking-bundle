@@ -9,6 +9,7 @@ services:
             arguments: 
                 templating:        "@templating"
                 lookupAdapter:     "@azine_geo_blocking_lookup_adapter"
+                logger:            "@logger"
                 parameters:
                     blockAnonOnly:     "%azine_geo_blocking_block_anonymouse_users_only%"
                     countryWhitelist:  "%azine_geo_blocking_countries_whitelist%"   
@@ -19,6 +20,8 @@ services:
                     blockedPageView:   "%azine_geo_blocking_access_denied_view%"
                     loginRoute:        "%azine_geo_blocking_login_route%"
                     enabled:           "%azine_geo_blocking_enabled%"
+                    logBlockedRequests: "%azine_geo_blocking_logBlockedRequests%"
+                    ip_whitelist:      "%azine_geo_blocking_ip_whitelist%"
             
     azine_geo_blocking.default.lookup.adapter:  
             class: Azine\GeoBlockingBundle\Adapter\DefaultLookupAdapter      

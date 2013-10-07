@@ -45,6 +45,8 @@ class AzineGeoBlockingExtension extends Extension
         $container->setParameter($prefix."allow_private_ips", $config["allow_private_ips"]);
         $container->setParameter($prefix."access_denied_view", $config["access_denied_view"]);
         $container->setParameter($prefix."login_route", $config["login_route"]);
+        $container->setParameter($prefix."ip_whitelist", $config['ip_whitelist']);
+        $container->setParameter($prefix."logBlockedRequests", $config['logBlockedRequests']);
 
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
