@@ -363,7 +363,7 @@ class GeoBlockingKernelRequestListenerTest extends \PHPUnit_Framework_TestCase{
     	$requestMock = $this->getMockBuilder("Symfony\Component\HttpFoundation\Request")->disableOriginalConstructor()->getMock();
     	$userMock = $this->getMockBuilder("FOS\UserBundle\Model\UserInterface")->disableOriginalConstructor()->getMock();
     	$lookUpMock = $this->getMockBuilder("Azine\GeoBlockingBundle\Adapter\DefaultLookupAdapter")->getMock();
-    	$loggerMock = $this->getMockBuilder("Monolog\Logger")->disableOriginalConstructor()->getMock();
+    	$loggerMock = $this->getMockBuilder("Psr\Log\LoggerInterface")->disableOriginalConstructor()->getMock();
 
     	$eventBlockMock->expects($this->once())->method("getRequestType")->will($this->returnValue(HttpKernelInterface::MASTER_REQUEST));
     	$eventBlockMock->expects($this->once())->method("getRequest")->will($this->returnValue($requestMock));
