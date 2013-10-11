@@ -11,10 +11,11 @@ use Azine\GeoBlockingBundle\EventListener\GeoBlockingKernelRequestListener;
 
 class GeoBlockingKernelRequestListenerTest extends \PHPUnit_Framework_TestCase{
 
-	private $usIP = "8.8.8.8";
+	private $usIP = "17.149.160.49";
 	private $localIP = "192.168.0.42";
 	private $chIP = "194.150.248.201";
-	private $googleBotIP = "216.239.46.101";
+	private $googleBotIP = "66.249.78.150";
+	private $msnBotIP = "157.56.93.153";
 
     public function testOnKernelRequestGeoBlocking_Disabled(){
 		$parameters = $this->getDefaultParams();
@@ -298,7 +299,7 @@ class GeoBlockingKernelRequestListenerTest extends \PHPUnit_Framework_TestCase{
 		$eventBlockMock->expects($this->once())->method("getRequest")->will($this->returnValue($requestMock));
 		$requestMock->expects($this->once())->method("getUser")->will($this->returnValue(null));
 		$requestMock->expects($this->once())->method("getClientIp")->will($this->returnValue($this->usIP));
-		$requestMock->expects($this->once())->method("get")->with("_route", null, false)->will($this->returnValue("fos_"));
+		$requestMock->expects($this->once())->method("get")->with("_route", null, false)->will($this->returnValue("random_route"));
 		$lookUpMock->expects($this->once())->method("getCountry")->with($this->usIP)->will($this->returnValue("US"));
 		$eventBlockMock->expects($this->once())->method("setResponse");
 		$eventBlockMock->expects($this->once())->method("stopPropagation");
@@ -335,7 +336,7 @@ class GeoBlockingKernelRequestListenerTest extends \PHPUnit_Framework_TestCase{
 
     public function testOnKernelRequestGeoBlocking_IP_WhiteList_allow_regexp(){
     	$parameters = $this->getDefaultParams();
-    	$parameters['ip_whitelist'] = array("/216\.239\.46\.\d{1,3}/");
+    	$parameters['ip_whitelist'] = array("/66\.249\.78\.\d{1,3}/");
     	$eventBlockMock = $this->getMockBuilder("Symfony\Component\HttpKernel\Event\GetResponseEvent")->disableOriginalConstructor()->getMock();
     	$requestMock = $this->getMockBuilder("Symfony\Component\HttpFoundation\Request")->disableOriginalConstructor()->getMock();
     	$userMock = $this->getMockBuilder("FOS\UserBundle\Model\UserInterface")->disableOriginalConstructor()->getMock();
@@ -346,8 +347,8 @@ class GeoBlockingKernelRequestListenerTest extends \PHPUnit_Framework_TestCase{
     	$eventBlockMock->expects($this->once())->method("getRequest")->will($this->returnValue($requestMock));
     	$requestMock->expects($this->once())->method("getUser")->will($this->returnValue(null));
     	$requestMock->expects($this->once())->method("getClientIp")->will($this->returnValue($this->googleBotIP));
-    	$requestMock->expects($this->never())->method("get");
-    	$lookUpMock->expects($this->never())->method("getCountry");
+		$requestMock->expects($this->once())->method("get")->with("_route", null, false)->will($this->returnValue("random_route"));
+		$lookUpMock->expects($this->once())->method("getCountry")->with($this->googleBotIP)->will($this->returnValue("US"));
     	$eventBlockMock->expects($this->never())->method("setResponse");
     	$eventBlockMock->expects($this->never())->method("stopPropagation");
 
@@ -369,8 +370,8 @@ class GeoBlockingKernelRequestListenerTest extends \PHPUnit_Framework_TestCase{
     	$eventBlockMock->expects($this->once())->method("getRequest")->will($this->returnValue($requestMock));
     	$requestMock->expects($this->once())->method("getUser")->will($this->returnValue(null));
     	$requestMock->expects($this->once())->method("getClientIp")->will($this->returnValue($this->googleBotIP));
-    	$requestMock->expects($this->never())->method("get");
-    	$lookUpMock->expects($this->never())->method("getCountry");
+		$requestMock->expects($this->once())->method("get")->with("_route", null, false)->will($this->returnValue("random_route"));
+		$lookUpMock->expects($this->once())->method("getCountry")->with($this->googleBotIP)->will($this->returnValue("US"));
     	$eventBlockMock->expects($this->never())->method("setResponse");
     	$eventBlockMock->expects($this->never())->method("stopPropagation");
 
@@ -401,7 +402,7 @@ class GeoBlockingKernelRequestListenerTest extends \PHPUnit_Framework_TestCase{
     	$eventBlockMock->expects($this->exactly(2))->method("getRequest")->will($this->returnValue($requestMock));
     	$requestMock->expects($this->once())->method("getUser")->will($this->returnValue(null));
     	$requestMock->expects($this->exactly(2))->method("getClientIp")->will($this->returnValue($this->usIP));
-    	$requestMock->expects($this->exactly(2))->method("get")->with("_route", null, false)->will($this->returnValue("fos_"));
+    	$requestMock->expects($this->exactly(2))->method("get")->with("_route", null, false)->will($this->returnValue("random_route"));
     	$lookUpMock->expects($this->once())->method("getCountry")->with($this->usIP)->will($this->returnValue("US"));
     	$eventBlockMock->expects($this->once())->method("setResponse");
     	$eventBlockMock->expects($this->once())->method("stopPropagation");
@@ -412,6 +413,81 @@ class GeoBlockingKernelRequestListenerTest extends \PHPUnit_Framework_TestCase{
     	$geoBlockingListener->onKernelRequest($eventBlockMock);
 
     }
+
+    public function testOnKernelRequestGeoBlocking_Search_Engine_Bot_Allow_Google(){
+    	$parameters = $this->getDefaultParams();
+    	$parameters['allow_search_bots'] = true;
+    	$eventBlockMock = $this->getMockBuilder("Symfony\Component\HttpKernel\Event\GetResponseEvent")->disableOriginalConstructor()->getMock();
+    	$requestMock = $this->getMockBuilder("Symfony\Component\HttpFoundation\Request")->disableOriginalConstructor()->getMock();
+    	$userMock = $this->getMockBuilder("FOS\UserBundle\Model\UserInterface")->disableOriginalConstructor()->getMock();
+    	$lookUpMock = $this->getMockBuilder("Azine\GeoBlockingBundle\Adapter\DefaultLookupAdapter")->getMock();
+    	$loggerMock = $this->getMockBuilder("Psr\Log\LoggerInterface")->disableOriginalConstructor()->getMock();
+
+    	$eventBlockMock->expects($this->once())->method("getRequestType")->will($this->returnValue(HttpKernelInterface::MASTER_REQUEST));
+    	$eventBlockMock->expects($this->once())->method("getRequest")->will($this->returnValue($requestMock));
+    	$requestMock->expects($this->once())->method("getUser")->will($this->returnValue(null));
+    	$requestMock->expects($this->once())->method("getClientIp")->will($this->returnValue($this->googleBotIP));
+    	$requestMock->expects($this->once())->method("get")->with("_route", null, false)->will($this->returnValue("random_route"));
+    	$lookUpMock->expects($this->once())->method("getCountry")->with($this->googleBotIP)->will($this->returnValue("US"));
+    	$eventBlockMock->expects($this->never())->method("setResponse");
+    	$eventBlockMock->expects($this->never())->method("stopPropagation");
+
+    	$loggerMock->expects($this->never())->method("info");
+
+
+    	$geoBlockingListener = new GeoBlockingKernelRequestListener($this->getTemplatingMock(false), $lookUpMock, $loggerMock, $parameters);
+    	$geoBlockingListener->onKernelRequest($eventBlockMock);
+    }
+
+    public function testOnKernelRequestGeoBlocking_Search_Engine_Bot_Allow_MSN(){
+    	$parameters = $this->getDefaultParams();
+    	$parameters['allow_search_bots'] = true;
+    	$eventBlockMock = $this->getMockBuilder("Symfony\Component\HttpKernel\Event\GetResponseEvent")->disableOriginalConstructor()->getMock();
+    	$requestMock = $this->getMockBuilder("Symfony\Component\HttpFoundation\Request")->disableOriginalConstructor()->getMock();
+    	$userMock = $this->getMockBuilder("FOS\UserBundle\Model\UserInterface")->disableOriginalConstructor()->getMock();
+    	$lookUpMock = $this->getMockBuilder("Azine\GeoBlockingBundle\Adapter\DefaultLookupAdapter")->getMock();
+    	$loggerMock = $this->getMockBuilder("Psr\Log\LoggerInterface")->disableOriginalConstructor()->getMock();
+
+    	$eventBlockMock->expects($this->once())->method("getRequestType")->will($this->returnValue(HttpKernelInterface::MASTER_REQUEST));
+    	$eventBlockMock->expects($this->once())->method("getRequest")->will($this->returnValue($requestMock));
+    	$requestMock->expects($this->once())->method("getUser")->will($this->returnValue(null));
+    	$requestMock->expects($this->once())->method("getClientIp")->will($this->returnValue($this->msnBotIP));
+    	$requestMock->expects($this->once())->method("get")->with("_route", null, false)->will($this->returnValue("random_route"));
+    	$lookUpMock->expects($this->once())->method("getCountry")->with($this->msnBotIP)->will($this->returnValue("US"));
+    	$eventBlockMock->expects($this->never())->method("setResponse");
+    	$eventBlockMock->expects($this->never())->method("stopPropagation");
+
+    	$loggerMock->expects($this->never())->method("info");
+
+
+    	$geoBlockingListener = new GeoBlockingKernelRequestListener($this->getTemplatingMock(false), $lookUpMock, $loggerMock, $parameters);
+    	$geoBlockingListener->onKernelRequest($eventBlockMock);
+    }
+
+    public function testOnKernelRequestGeoBlocking_Search_Engine_Bot_Deny_usIP(){
+    	$parameters = $this->getDefaultParams();
+    	$parameters['allow_search_bots'] = true;
+
+    	$eventBlockMock = $this->getMockBuilder("Symfony\Component\HttpKernel\Event\GetResponseEvent")->disableOriginalConstructor()->getMock();
+    	$requestMock = $this->getMockBuilder("Symfony\Component\HttpFoundation\Request")->disableOriginalConstructor()->getMock();
+    	$userMock = $this->getMockBuilder("FOS\UserBundle\Model\UserInterface")->disableOriginalConstructor()->getMock();
+    	$lookUpMock = $this->getMockBuilder("Azine\GeoBlockingBundle\Adapter\DefaultLookupAdapter")->getMock();
+    	$loggerMock = $this->getMockBuilder("Psr\Log\LoggerInterface")->disableOriginalConstructor()->getMock();
+
+    	$eventBlockMock->expects($this->once())->method("getRequestType")->will($this->returnValue(HttpKernelInterface::MASTER_REQUEST));
+    	$eventBlockMock->expects($this->once())->method("getRequest")->will($this->returnValue($requestMock));
+    	$requestMock->expects($this->once())->method("getUser")->will($this->returnValue(null));
+    	$requestMock->expects($this->once())->method("getClientIp")->will($this->returnValue($this->usIP));
+    	$requestMock->expects($this->once())->method("get")->with("_route", null, false)->will($this->returnValue("random_route"));
+    	$lookUpMock->expects($this->once())->method("getCountry")->with($this->usIP)->will($this->returnValue("US"));
+
+    	$eventBlockMock->expects($this->once())->method("setResponse");
+    	$eventBlockMock->expects($this->once())->method("stopPropagation");
+
+    	$geoBlockingListener = new GeoBlockingKernelRequestListener($this->getTemplatingMock(true), $lookUpMock, $loggerMock, $parameters);
+    	$geoBlockingListener->onKernelRequest($eventBlockMock);
+    }
+
 
 
     private function getTemplatingMock($showBlockingPage){
@@ -437,6 +513,7 @@ class GeoBlockingKernelRequestListenerTest extends \PHPUnit_Framework_TestCase{
     	$parameters['countryBlacklist']	= array();
     	$parameters['ip_whitelist']	= array();
     	$parameters['logBlockedRequests'] = false;
+    	$parameters['allow_search_bots'] = false;
     	return $parameters;
     }
 }

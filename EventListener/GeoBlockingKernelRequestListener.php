@@ -56,11 +56,6 @@ class GeoBlockingKernelRequestListener{
 			}
 		}
 
-		// check if the vistitor is a whitelisted IP
-		if($this->isAllowedByWhiteListConfig($visitorAddress)){
-			return;
-		}
-
 	   	// check if the route is allowed from the current visitors country via whitelists
 		$routeName = $request->get('_route');
 		$allowedByRouteWhiteList = array_search($routeName, $this->configParams['routeWhitelist'], true) === false;
@@ -73,6 +68,17 @@ class GeoBlockingKernelRequestListener{
 		if(!$allowedByCountryWhiteList){
 			return;
 		}
+
+		// check if the vistitor is a whitelisted IP
+		if($this->isAllowedByIpWhiteListConfig($visitorAddress)){
+			return;
+		}
+
+		// check if the visitor is allowed because it's a search-engine crawler of google or msn
+		if($this->isAllowedBecauseIpIsSearchEngingeCrawler($visitorAddress)){
+			return true;
+		}
+
 
 		$useRouteBL = !empty($this->configParams['routeBlacklist']);
 		$useCountryBL = !empty($this->configParams['countryBlacklist']);
@@ -113,9 +119,44 @@ class GeoBlockingKernelRequestListener{
 		}
 	}
 
-	private function isAllowedByWhiteListConfig($ip){
+	private function isAllowedByIpWhiteListConfig($ip){
 		foreach ($this->configParams['ip_whitelist'] as $pattern){
 			if($ip == $pattern || @preg_match($pattern, $ip) === 1){
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private function isAllowedBecauseIpIsSearchEngingeCrawler($ip){
+		if($this->configParams['allow_search_bots']){
+
+			// resolve host name
+			$hostName = gethostbyaddr($ip);
+			// reverse resolve IP
+			$reverseIP = gethostbyname($hostName);
+
+
+			// chekc if the hostname matches any of the search-engine names.
+			$searchEngineDomains = array(
+											".google.com",
+											".googlebot.com",
+											".search.msn.com",
+										);
+
+			$isSearchEngineDomain = false;
+			foreach ($searchEngineDomains as $domain){
+				// if the hostname ends with any of the search-engine-domain names
+				if(substr( $hostName, strlen( $hostName ) - strlen( $domain ) ) == $domain){
+					// set variable to true and stop the loop
+					$isSearchEngineDomain = true;
+					break;
+				}
+			}
+
+			// if the IP and reverse resolved IP match and the ip belongs to a search-engine-domain
+			if($ip == $reverseIP && $isSearchEngineDomain){
+				// allow the ip
 				return true;
 			}
 		}

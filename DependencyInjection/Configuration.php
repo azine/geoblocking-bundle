@@ -29,6 +29,7 @@ class Configuration implements ConfigurationInterface{
 	        	->booleanNode	('allow_private_ips')			->defaultTrue()->info("true | false : also applie the rules to private IPs e.g. 127.0.0.1 or 192.168.xxx.yyy etc.")->end()
 	        	->variableNode	('ip_whitelist')				->defaultValue(array())->info("List of IPs (or regexp for IPs) you would like to allow. E.g. Search engine crawlers")->end()
 	        	->scalarNode	('logBlockedRequests')			->defaultFalse()->info("true | false : Log a message for blocked request.")->end()
+	        	->scalarNode	('allow_search_bots')			->defaultFalse()->info("true | false : Allow Bing and Google crawlers.")->end()
 	        	->arrayNode		('countries')->info("only whitelist or blacklist can contain values.")->addDefaultsIfNotSet()
 		        	->children()
 		        		->variableNode('blacklist')->defaultValue(array())->info("e.g. 'US','CN' etc. => access is denied to visitors from these countries")->end()

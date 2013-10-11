@@ -89,7 +89,7 @@ azine_geo_blocking:
 	# and maybe this page http://myip.ms/info/bots/Google_Bing_Yahoo_Facebook_etc_Bot_IP_Addresses.html
     ip_whitelist:       			[]										    # List of IPs you would like to allow. E.g. Search engine crawlers
     logBlockedRequests:   			false									    # true | false : Log a message for blocked request.
-
+	allow_search_bots: 				false										# true | false : Allow Bing(MSN) and Google crawlers.
 	# routes to applie the blocking rules to
     # only either whitelist or blacklist can contain values, if you configure both, the blacklist will be ignored.
     routes:
