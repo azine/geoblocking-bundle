@@ -120,9 +120,11 @@ class GeoBlockingKernelRequestListener{
 	}
 
 	private function isAllowedByIpWhiteListConfig($ip){
-		foreach ($this->configParams['ip_whitelist'] as $pattern){
-			if($ip == $pattern || @preg_match($pattern, $ip) === 1){
-				return true;
+		if($this->configParams['ip_whitelist']){
+			foreach ($this->configParams['ip_whitelist'] as $pattern){
+				if($ip == $pattern || @preg_match($pattern, $ip) === 1){
+					return true;
+				}
 			}
 		}
 		return false;
