@@ -48,6 +48,7 @@ class AzineGeoBlockingExtension extends Extension
         $container->setParameter($prefix."ip_whitelist", $config['ip_whitelist']);
         $container->setParameter($prefix."logBlockedRequests", $config['logBlockedRequests']);
         $container->setParameter($prefix."allow_search_bots", $config['allow_search_bots']);
+        $container->setParameter($prefix."search_bot_domains", $config['search_bot_domains']);
 
 
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));

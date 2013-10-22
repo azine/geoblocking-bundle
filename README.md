@@ -83,13 +83,21 @@ azine_geo_blocking:
     lookup_adapter:       			azine_geo_blocking.default.lookup.adapter	# id of the lookup-adapter you would like to use (e.g. azine_geo_blocking.maxmind.lookup.adapter)
     allow_private_ips:    			true										# true | false : also applie the rules to private IPs e.g. 127.0.0.1 or 192.168.xxx.yyy etc.
 	
-	# you can white-list ips so search-crawlers etc. can access you site     
+	# you can white-list ips certain networks can access you site     
 	# default is empty, but you can specify an arry of ip addresses or regex-pattern
-	# also see https://support.google.com/webmasters/answer/80553 on how to check googleBots
-	# and maybe this page http://myip.ms/info/bots/Google_Bing_Yahoo_Facebook_etc_Bot_IP_Addresses.html
     ip_whitelist:       			[]										    # List of IPs you would like to allow. E.g. Search engine crawlers
     logBlockedRequests:   			false									    # true | false : Log a message for blocked request.
-	allow_search_bots: 				false										# true | false : Allow Bing(MSN) and Google crawlers.
+
+	# you can also allow search-bots by looking up their domain
+	# also see https://support.google.com/webmasters/answer/80553 on how to check googleBots
+	allow_search_bots: 				false										# true | false : allow the domains listed in "search_bot_domains"
+    # array of domains of allowed search-engine-bots e.g. .googlebot.com or .search.msn.com (make sure you add the dot at the start of the domain, so "evilcopyofgooglebot.com" will not be allowed but "some.host.name.googlebot.com" will be.
+    search_bot_domains:
+        # Defaults:
+        - .google.com
+        - .googlebot.com
+        - .search.msn.com
+
 	# routes to applie the blocking rules to
     # only either whitelist or blacklist can contain values, if you configure both, the blacklist will be ignored.
     routes:

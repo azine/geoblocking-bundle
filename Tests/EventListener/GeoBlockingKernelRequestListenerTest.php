@@ -375,7 +375,7 @@ class GeoBlockingKernelRequestListenerTest extends \PHPUnit_Framework_TestCase{
     	$eventBlockMock->expects($this->never())->method("setResponse");
     	$eventBlockMock->expects($this->never())->method("stopPropagation");
 
-    	$loggerMock->expects($this->never())->method("info");
+    	$loggerMock->expects($this->never())->method("warning");
 
 
     	$geoBlockingListener = new GeoBlockingKernelRequestListener($this->getTemplatingMock(false), $lookUpMock, $loggerMock, $parameters);
@@ -407,7 +407,7 @@ class GeoBlockingKernelRequestListenerTest extends \PHPUnit_Framework_TestCase{
     	$eventBlockMock->expects($this->once())->method("setResponse");
     	$eventBlockMock->expects($this->once())->method("stopPropagation");
 
-		$loggerMock->expects($this->once())->method("info");
+		$loggerMock->expects($this->exactly(2))->method("warning");
 
     	$geoBlockingListener = new GeoBlockingKernelRequestListener($this->getTemplatingMock(true), $lookUpMock, $loggerMock, $parameters);
     	$geoBlockingListener->onKernelRequest($eventBlockMock);
@@ -432,7 +432,7 @@ class GeoBlockingKernelRequestListenerTest extends \PHPUnit_Framework_TestCase{
     	$eventBlockMock->expects($this->never())->method("setResponse");
     	$eventBlockMock->expects($this->never())->method("stopPropagation");
 
-    	$loggerMock->expects($this->never())->method("info");
+    	$loggerMock->expects($this->never())->method("warning");
 
 
     	$geoBlockingListener = new GeoBlockingKernelRequestListener($this->getTemplatingMock(false), $lookUpMock, $loggerMock, $parameters);
@@ -457,7 +457,7 @@ class GeoBlockingKernelRequestListenerTest extends \PHPUnit_Framework_TestCase{
     	$eventBlockMock->expects($this->never())->method("setResponse");
     	$eventBlockMock->expects($this->never())->method("stopPropagation");
 
-    	$loggerMock->expects($this->never())->method("info");
+    	$loggerMock->expects($this->never())->method("warning");
 
 
     	$geoBlockingListener = new GeoBlockingKernelRequestListener($this->getTemplatingMock(false), $lookUpMock, $loggerMock, $parameters);
@@ -514,6 +514,7 @@ class GeoBlockingKernelRequestListenerTest extends \PHPUnit_Framework_TestCase{
     	$parameters['ip_whitelist']	= array();
     	$parameters['logBlockedRequests'] = false;
     	$parameters['allow_search_bots'] = false;
+    	$parameters['search_bot_domains'] = array(".google.com", ".googlebot.com", ".search.msn.com");
     	return $parameters;
     }
 }
