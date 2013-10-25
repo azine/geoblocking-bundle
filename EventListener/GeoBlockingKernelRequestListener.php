@@ -83,15 +83,17 @@ class GeoBlockingKernelRequestListener{
 		// check if the visitor is allowed because it's a search-engine crawler of google or msn
 		if($this->isAllowedBecauseIpIsSearchEngingeCrawler($visitorAddress)){
 			$this->logger->info("azine_geoblocking_bundle: allowed by searchEngineConfig");
-			return true;
+			return;
 		}
 
 
-		$useRouteBL = !empty($this->configParams['routeBlacklist']);
-		$useCountryBL = !empty($this->configParams['countryBlacklist']);
+		// until here everything that is allowed has been filtered out.
+		$useRouteBL = array_key_exists('routeBlacklist', $this->configParams) && !empty($this->configParams['routeBlacklist']);
+		$useCountryBL = array_key_exists('countryBlacklist', $this->configParams) && !empty($this->configParams['countryBlacklist']);
 
+		// if neither of the blackLists should be used, deny all remaining requests
 		if(!$useRouteBL && !$useCountryBL){
-			$this->logger->warning("azine_geoblocking_bundle: blocked by routeBL or countryBL (!useRouteBL($useRouteBL) && !useCountryBL($useCountryBL))");
+			$this->logger->warning("azine_geoblocking_bundle: no blackLists defined and the request (Route: $routeName, Country: $country, IP: $visitorAddress) was not allowed by any of the whiteList/positive filters.");
 			$this->blockAccess($event, $country);
 			return;
 		}
@@ -111,6 +113,7 @@ class GeoBlockingKernelRequestListener{
 			}
 		}
 
+		// one or both blacklists were defined to be used, but the request was not filtered out => allow the request
 		$this->logger->info("azine_geoblocking_bundle: allowed, no denial-rule triggered");
 		return;
 	}
