@@ -23,11 +23,13 @@ class GeoBlockingKernelRequestListenerTest extends \PHPUnit_Framework_TestCase{
 		$eventAllowMock = $this->getMockBuilder("Symfony\Component\HttpKernel\Event\GetResponseEvent")->disableOriginalConstructor()->getMock();
 		$loggerMock = $this->getMockBuilder("Psr\Log\LoggerInterface")->disableOriginalConstructor()->getMock();
 
+		$containerMock = $this->getMockBuilder("Symfony\Component\DependencyInjection\Container")->disableOriginalConstructor()->getMock();
+
 		$eventAllowMock->expects($this->never())->method("getRequest");
 		$eventAllowMock->expects($this->never())->method("setResponse");
 		$eventAllowMock->expects($this->never())->method("stopPropagation");
 
-		$geoBlockingListener = new GeoBlockingKernelRequestListener($this->getTemplatingMock(false), new DefaultLookupAdapter(), $loggerMock, $parameters);
+		$geoBlockingListener = new GeoBlockingKernelRequestListener($this->getTemplatingMock(false), new DefaultLookupAdapter(), $loggerMock, $containerMock, $parameters);
 		$geoBlockingListener->onKernelRequest($eventAllowMock);
 
     }
@@ -38,14 +40,21 @@ class GeoBlockingKernelRequestListenerTest extends \PHPUnit_Framework_TestCase{
 		$requestMock = $this->getMockBuilder("Symfony\Component\HttpFoundation\Request")->disableOriginalConstructor()->getMock();
 		$loggerMock = $this->getMockBuilder("Psr\Log\LoggerInterface")->disableOriginalConstructor()->getMock();
 
+		$containerMock = $this->getMockBuilder("Symfony\Component\DependencyInjection\Container")->disableOriginalConstructor()->getMock();
+		$securityContextMock = $this->getMockBuilder("Symfony\Component\Security\Core\SecurityContext")->disableOriginalConstructor()->getMock();
+		$tokenMock = $this->getMockBuilder("Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken")->disableOriginalConstructor()->getMock();
+
+		$tokenMock->expects($this->once())->method("getUser")->will($this->returnValue(null));
+		$securityContextMock->expects($this->once())->method("getToken")->will($this->returnValue($tokenMock));
+		$containerMock->expects($this->once())->method("get")->will($this->returnValue($securityContextMock));
+
 		$eventBlockMock->expects($this->once())->method("getRequestType")->will($this->returnValue(HttpKernelInterface::MASTER_REQUEST));
 		$eventBlockMock->expects($this->once())->method("setResponse");
 		$eventBlockMock->expects($this->once())->method("stopPropagation");
-		$requestMock->expects($this->once())->method("getUser")->will($this->returnValue(null));
 		$requestMock->expects($this->once())->method("getClientIp")->will($this->returnValue($this->usIP));
 		$eventBlockMock->expects($this->once())->method("getRequest")->will($this->returnValue($requestMock));
 
-		$geoBlockingListener = new GeoBlockingKernelRequestListener($this->getTemplatingMock(true), new DefaultLookupAdapter(), $loggerMock, $parameters);
+		$geoBlockingListener = new GeoBlockingKernelRequestListener($this->getTemplatingMock(true), new DefaultLookupAdapter(), $loggerMock, $containerMock, $parameters);
 		$geoBlockingListener->onKernelRequest($eventBlockMock);
     }
 
@@ -54,12 +63,14 @@ class GeoBlockingKernelRequestListenerTest extends \PHPUnit_Framework_TestCase{
     	$eventBlockMock = $this->getMockBuilder("Symfony\Component\HttpKernel\Event\GetResponseEvent")->disableOriginalConstructor()->getMock();
     	$loggerMock = $this->getMockBuilder("Psr\Log\LoggerInterface")->disableOriginalConstructor()->getMock();
 
-		$eventBlockMock->expects($this->once())->method("getRequestType")->will($this->returnValue(HttpKernelInterface::SUB_REQUEST));
+    	$containerMock = $this->getMockBuilder("Symfony\Component\DependencyInjection\Container")->disableOriginalConstructor()->getMock();
+
+    	$eventBlockMock->expects($this->once())->method("getRequestType")->will($this->returnValue(HttpKernelInterface::SUB_REQUEST));
 		$eventBlockMock->expects($this->never())->method("setResponse");
 		$eventBlockMock->expects($this->never())->method("stopPropagation");
 		$eventBlockMock->expects($this->never())->method("getRequest");
 
-		$geoBlockingListener = new GeoBlockingKernelRequestListener($this->getTemplatingMock(false), new DefaultLookupAdapter(), $loggerMock, $parameters);
+		$geoBlockingListener = new GeoBlockingKernelRequestListener($this->getTemplatingMock(false), new DefaultLookupAdapter(), $loggerMock, $containerMock, $parameters);
 		$geoBlockingListener->onKernelRequest($eventBlockMock);
      }
 
@@ -67,18 +78,25 @@ class GeoBlockingKernelRequestListenerTest extends \PHPUnit_Framework_TestCase{
     	$parameters = $this->getDefaultParams();
     	$parameters['blockAnonOnly'] = false;
     	$requestMock = $this->getMockBuilder("Symfony\Component\HttpFoundation\Request")->disableOriginalConstructor()->getMock();
-    	$userMock = $this->getMockBuilder("FOS\UserBundle\Model\UserInterface")->disableOriginalConstructor()->getMock();
     	$loggerMock = $this->getMockBuilder("Psr\Log\LoggerInterface")->disableOriginalConstructor()->getMock();
+
+    	$containerMock = $this->getMockBuilder("Symfony\Component\DependencyInjection\Container")->disableOriginalConstructor()->getMock();
+    	$securityContextMock = $this->getMockBuilder("Symfony\Component\Security\Core\SecurityContext")->disableOriginalConstructor()->getMock();
+    	$tokenMock = $this->getMockBuilder("Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken")->disableOriginalConstructor()->getMock();
+
+    	$tokenMock->expects($this->once())->method("getUser")->will($this->returnValue($this->getMockBuilder("FOS\UserBundle\Model\UserInterface")->disableOriginalConstructor()->getMock()));
+    	$securityContextMock->expects($this->once())->method("getToken")->will($this->returnValue($tokenMock));
+    	$containerMock->expects($this->once())->method("get")->will($this->returnValue($securityContextMock));
+
 
     	$eventBlockMock = $this->getMockBuilder("Symfony\Component\HttpKernel\Event\GetResponseEvent")->disableOriginalConstructor()->getMock();
     	$eventBlockMock->expects($this->once())->method("getRequestType")->will($this->returnValue(HttpKernelInterface::MASTER_REQUEST));
     	$eventBlockMock->expects($this->once())->method("setResponse");
     	$eventBlockMock->expects($this->once())->method("stopPropagation");
-    	$requestMock->expects($this->once())->method("getUser")->will($this->returnValue($userMock));
     	$requestMock->expects($this->once())->method("getClientIp")->will($this->returnValue($this->usIP));
     	$eventBlockMock->expects($this->once())->method("getRequest")->will($this->returnValue($requestMock));
 
-    	$geoBlockingListener = new GeoBlockingKernelRequestListener($this->getTemplatingMock(true), new DefaultLookupAdapter(), $loggerMock, $parameters);
+    	$geoBlockingListener = new GeoBlockingKernelRequestListener($this->getTemplatingMock(true), new DefaultLookupAdapter(), $loggerMock, $containerMock, $parameters);
     	$geoBlockingListener->onKernelRequest($eventBlockMock);
     }
 
@@ -88,15 +106,23 @@ class GeoBlockingKernelRequestListenerTest extends \PHPUnit_Framework_TestCase{
     	$requestMock = $this->getMockBuilder("Symfony\Component\HttpFoundation\Request")->disableOriginalConstructor()->getMock();
     	$loggerMock = $this->getMockBuilder("Psr\Log\LoggerInterface")->disableOriginalConstructor()->getMock();
 
+    	$containerMock = $this->getMockBuilder("Symfony\Component\DependencyInjection\Container")->disableOriginalConstructor()->getMock();
+    	$securityContextMock = $this->getMockBuilder("Symfony\Component\Security\Core\SecurityContext")->disableOriginalConstructor()->getMock();
+    	$tokenMock = $this->getMockBuilder("Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken")->disableOriginalConstructor()->getMock();
+
+    	$tokenMock->expects($this->once())->method("getUser")->will($this->returnValue(null));
+    	$securityContextMock->expects($this->once())->method("getToken")->will($this->returnValue($tokenMock));
+    	$containerMock->expects($this->once())->method("get")->will($this->returnValue($securityContextMock));
+
+
     	$eventBlockMock->expects($this->once())->method("getRequestType")->will($this->returnValue(HttpKernelInterface::MASTER_REQUEST));
     	$eventBlockMock->expects($this->once())->method("setResponse");
-    	$requestMock->expects($this->once())->method("getUser")->will($this->returnValue(null));
     	$requestMock->expects($this->once())->method("getClientIp")->will($this->returnValue($this->usIP));
 		$requestMock->expects($this->once())->method("get");
     	$eventBlockMock->expects($this->once())->method("stopPropagation");
     	$eventBlockMock->expects($this->once())->method("getRequest")->will($this->returnValue($requestMock));
 
-    	$geoBlockingListener = new GeoBlockingKernelRequestListener($this->getTemplatingMock(true), new DefaultLookupAdapter(), $loggerMock, $parameters);
+    	$geoBlockingListener = new GeoBlockingKernelRequestListener($this->getTemplatingMock(true), new DefaultLookupAdapter(), $loggerMock, $containerMock, $parameters);
     	$geoBlockingListener->onKernelRequest($eventBlockMock);
 
     }
@@ -108,15 +134,22 @@ class GeoBlockingKernelRequestListenerTest extends \PHPUnit_Framework_TestCase{
     	$userMock = $this->getMockBuilder("FOS\UserBundle\Model\UserInterface")->disableOriginalConstructor()->getMock();
     	$loggerMock = $this->getMockBuilder("Psr\Log\LoggerInterface")->disableOriginalConstructor()->getMock();
 
+    	$containerMock = $this->getMockBuilder("Symfony\Component\DependencyInjection\Container")->disableOriginalConstructor()->getMock();
+    	$securityContextMock = $this->getMockBuilder("Symfony\Component\Security\Core\SecurityContext")->disableOriginalConstructor()->getMock();
+    	$tokenMock = $this->getMockBuilder("Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken")->disableOriginalConstructor()->getMock();
+
+    	$tokenMock->expects($this->once())->method("getUser")->will($this->returnValue($this->getMockBuilder("FOS\UserBundle\Model\UserInterface")->disableOriginalConstructor()->getMock()));
+    	$securityContextMock->expects($this->once())->method("getToken")->will($this->returnValue($tokenMock));
+    	$containerMock->expects($this->once())->method("get")->will($this->returnValue($securityContextMock));
+
     	$eventBlockMock->expects($this->once())->method("getRequestType")->will($this->returnValue(HttpKernelInterface::MASTER_REQUEST));
     	$eventBlockMock->expects($this->once())->method("getRequest")->will($this->returnValue($requestMock));
-    	$requestMock->expects($this->once())->method("getUser")->will($this->returnValue($userMock));
        	$requestMock->expects($this->never())->method("getClientIp")->will($this->returnValue($this->usIP));
 		$requestMock->expects($this->never())->method("get");
     	$eventBlockMock->expects($this->never())->method("setResponse");
     	$eventBlockMock->expects($this->never())->method("stopPropagation");
 
-    	$geoBlockingListener = new GeoBlockingKernelRequestListener($this->getTemplatingMock(false), new DefaultLookupAdapter(), $loggerMock, $parameters);
+    	$geoBlockingListener = new GeoBlockingKernelRequestListener($this->getTemplatingMock(false), new DefaultLookupAdapter(), $loggerMock, $containerMock, $parameters);
     	$geoBlockingListener->onKernelRequest($eventBlockMock);
 
     }
@@ -129,16 +162,24 @@ class GeoBlockingKernelRequestListenerTest extends \PHPUnit_Framework_TestCase{
     	$lookUpMock = $this->getMockBuilder("Azine\GeoBlockingBundle\Adapter\DefaultLookupAdapter")->getMock();
     	$loggerMock = $this->getMockBuilder("Psr\Log\LoggerInterface")->disableOriginalConstructor()->getMock();
 
+    	$containerMock = $this->getMockBuilder("Symfony\Component\DependencyInjection\Container")->disableOriginalConstructor()->getMock();
+    	$securityContextMock = $this->getMockBuilder("Symfony\Component\Security\Core\SecurityContext")->disableOriginalConstructor()->getMock();
+    	$tokenMock = $this->getMockBuilder("Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken")->disableOriginalConstructor()->getMock();
+
+    	$tokenMock->expects($this->once())->method("getUser")->will($this->returnValue(null));
+    	$securityContextMock->expects($this->once())->method("getToken")->will($this->returnValue($tokenMock));
+    	$containerMock->expects($this->once())->method("get")->will($this->returnValue($securityContextMock));
+
     	$eventBlockMock->expects($this->once())->method("getRequestType")->will($this->returnValue(HttpKernelInterface::MASTER_REQUEST));
     	$eventBlockMock->expects($this->once())->method("getRequest")->will($this->returnValue($requestMock));
-    	$requestMock->expects($this->once())->method("getUser")->will($this->returnValue(null));
-    	$requestMock->expects($this->once())->method("getClientIp")->will($this->returnValue($this->localIP));
+
+       	$requestMock->expects($this->once())->method("getClientIp")->will($this->returnValue($this->localIP));
     	$requestMock->expects($this->never())->method("get");
     	$lookUpMock->expects($this->never())->method("getCountry");
     	$eventBlockMock->expects($this->never())->method("setResponse");
     	$eventBlockMock->expects($this->never())->method("stopPropagation");
 
-    	$geoBlockingListener = new GeoBlockingKernelRequestListener($this->getTemplatingMock(false), $lookUpMock, $loggerMock, $parameters);
+    	$geoBlockingListener = new GeoBlockingKernelRequestListener($this->getTemplatingMock(false), $lookUpMock, $loggerMock, $containerMock, $parameters);
     	$geoBlockingListener->onKernelRequest($eventBlockMock);
 
     }
@@ -151,16 +192,23 @@ class GeoBlockingKernelRequestListenerTest extends \PHPUnit_Framework_TestCase{
     	$lookUpMock = $this->getMockBuilder("Azine\GeoBlockingBundle\Adapter\DefaultLookupAdapter")->getMock();
     	$loggerMock = $this->getMockBuilder("Psr\Log\LoggerInterface")->disableOriginalConstructor()->getMock();
 
+    	$containerMock = $this->getMockBuilder("Symfony\Component\DependencyInjection\Container")->disableOriginalConstructor()->getMock();
+    	$securityContextMock = $this->getMockBuilder("Symfony\Component\Security\Core\SecurityContext")->disableOriginalConstructor()->getMock();
+    	$tokenMock = $this->getMockBuilder("Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken")->disableOriginalConstructor()->getMock();
+
+    	$tokenMock->expects($this->once())->method("getUser")->will($this->returnValue(null));
+    	$securityContextMock->expects($this->once())->method("getToken")->will($this->returnValue($tokenMock));
+    	$containerMock->expects($this->once())->method("get")->will($this->returnValue($securityContextMock));
+
     	$eventBlockMock->expects($this->once())->method("getRequestType")->will($this->returnValue(HttpKernelInterface::MASTER_REQUEST));
     	$eventBlockMock->expects($this->once())->method("getRequest")->will($this->returnValue($requestMock));
-    	$requestMock->expects($this->once())->method("getUser")->will($this->returnValue(null));
     	$requestMock->expects($this->once())->method("getClientIp")->will($this->returnValue($this->chIP));
     	$requestMock->expects($this->once())->method("get")->with("_route", null, false)->will($this->returnValue("notAllowedRoute"));
     	$lookUpMock->expects($this->once())->method("getCountry");
     	$eventBlockMock->expects($this->once())->method("setResponse");
     	$eventBlockMock->expects($this->once())->method("stopPropagation");
 
-    	$geoBlockingListener = new GeoBlockingKernelRequestListener($this->getTemplatingMock(true), $lookUpMock, $loggerMock, $parameters);
+    	$geoBlockingListener = new GeoBlockingKernelRequestListener($this->getTemplatingMock(true), $lookUpMock, $loggerMock, $containerMock, $parameters);
     	$geoBlockingListener->onKernelRequest($eventBlockMock);
 
     }
@@ -173,16 +221,23 @@ class GeoBlockingKernelRequestListenerTest extends \PHPUnit_Framework_TestCase{
     	$lookUpMock = $this->getMockBuilder("Azine\GeoBlockingBundle\Adapter\DefaultLookupAdapter")->getMock();
     	$loggerMock = $this->getMockBuilder("Psr\Log\LoggerInterface")->disableOriginalConstructor()->getMock();
 
+    	$containerMock = $this->getMockBuilder("Symfony\Component\DependencyInjection\Container")->disableOriginalConstructor()->getMock();
+    	$securityContextMock = $this->getMockBuilder("Symfony\Component\Security\Core\SecurityContext")->disableOriginalConstructor()->getMock();
+    	$tokenMock = $this->getMockBuilder("Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken")->disableOriginalConstructor()->getMock();
+
+    	$tokenMock->expects($this->once())->method("getUser")->will($this->returnValue(null));
+    	$securityContextMock->expects($this->once())->method("getToken")->will($this->returnValue($tokenMock));
+    	$containerMock->expects($this->once())->method("get")->will($this->returnValue($securityContextMock));
+
     	$eventBlockMock->expects($this->once())->method("getRequestType")->will($this->returnValue(HttpKernelInterface::MASTER_REQUEST));
     	$eventBlockMock->expects($this->once())->method("getRequest")->will($this->returnValue($requestMock));
-    	$requestMock->expects($this->once())->method("getUser")->will($this->returnValue(null));
     	$requestMock->expects($this->once())->method("getClientIp")->will($this->returnValue($this->chIP));
     	$requestMock->expects($this->once())->method("get")->with("_route", null, false)->will($this->returnValue("fos_user_security_login"));
     	$lookUpMock->expects($this->never())->method("getCountry");
     	$eventBlockMock->expects($this->never())->method("setResponse");
     	$eventBlockMock->expects($this->never())->method("stopPropagation");
 
-    	$geoBlockingListener = new GeoBlockingKernelRequestListener($this->getTemplatingMock(false), $lookUpMock, $loggerMock, $parameters);
+    	$geoBlockingListener = new GeoBlockingKernelRequestListener($this->getTemplatingMock(false), $lookUpMock, $loggerMock, $containerMock, $parameters);
     	$geoBlockingListener->onKernelRequest($eventBlockMock);
 
     }
@@ -199,16 +254,23 @@ class GeoBlockingKernelRequestListenerTest extends \PHPUnit_Framework_TestCase{
     	$lookUpMock = $this->getMockBuilder("Azine\GeoBlockingBundle\Adapter\DefaultLookupAdapter")->getMock();
     	$loggerMock = $this->getMockBuilder("Psr\Log\LoggerInterface")->disableOriginalConstructor()->getMock();
 
+    	$containerMock = $this->getMockBuilder("Symfony\Component\DependencyInjection\Container")->disableOriginalConstructor()->getMock();
+    	$securityContextMock = $this->getMockBuilder("Symfony\Component\Security\Core\SecurityContext")->disableOriginalConstructor()->getMock();
+    	$tokenMock = $this->getMockBuilder("Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken")->disableOriginalConstructor()->getMock();
+
+    	$tokenMock->expects($this->once())->method("getUser")->will($this->returnValue(null));
+    	$securityContextMock->expects($this->once())->method("getToken")->will($this->returnValue($tokenMock));
+    	$containerMock->expects($this->once())->method("get")->will($this->returnValue($securityContextMock));
+
     	$eventBlockMock->expects($this->once())->method("getRequestType")->will($this->returnValue(HttpKernelInterface::MASTER_REQUEST));
     	$eventBlockMock->expects($this->once())->method("getRequest")->will($this->returnValue($requestMock));
-    	$requestMock->expects($this->once())->method("getUser")->will($this->returnValue(null));
     	$requestMock->expects($this->once())->method("getClientIp")->will($this->returnValue($this->chIP));
     	$requestMock->expects($this->once())->method("get")->with("_route", null, false)->will($this->returnValue("notAllowedRoute"));
     	$lookUpMock->expects($this->once())->method("getCountry");
     	$eventBlockMock->expects($this->once())->method("setResponse");
     	$eventBlockMock->expects($this->once())->method("stopPropagation");
 
-    	$geoBlockingListener = new GeoBlockingKernelRequestListener($this->getTemplatingMock(true), $lookUpMock, $loggerMock, $parameters);
+    	$geoBlockingListener = new GeoBlockingKernelRequestListener($this->getTemplatingMock(true), $lookUpMock, $loggerMock, $containerMock, $parameters);
     	$geoBlockingListener->onKernelRequest($eventBlockMock);
 
     }
@@ -224,16 +286,23 @@ class GeoBlockingKernelRequestListenerTest extends \PHPUnit_Framework_TestCase{
     	$lookUpMock = $this->getMockBuilder("Azine\GeoBlockingBundle\Adapter\DefaultLookupAdapter")->getMock();
     	$loggerMock = $this->getMockBuilder("Psr\Log\LoggerInterface")->disableOriginalConstructor()->getMock();
 
+    	$containerMock = $this->getMockBuilder("Symfony\Component\DependencyInjection\Container")->disableOriginalConstructor()->getMock();
+    	$securityContextMock = $this->getMockBuilder("Symfony\Component\Security\Core\SecurityContext")->disableOriginalConstructor()->getMock();
+    	$tokenMock = $this->getMockBuilder("Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken")->disableOriginalConstructor()->getMock();
+
+    	$tokenMock->expects($this->once())->method("getUser")->will($this->returnValue(null));
+    	$securityContextMock->expects($this->once())->method("getToken")->will($this->returnValue($tokenMock));
+    	$containerMock->expects($this->once())->method("get")->will($this->returnValue($securityContextMock));
+
     	$eventBlockMock->expects($this->once())->method("getRequestType")->will($this->returnValue(HttpKernelInterface::MASTER_REQUEST));
     	$eventBlockMock->expects($this->once())->method("getRequest")->will($this->returnValue($requestMock));
-    	$requestMock->expects($this->once())->method("getUser")->will($this->returnValue(null));
     	$requestMock->expects($this->once())->method("getClientIp")->will($this->returnValue($this->chIP));
     	$requestMock->expects($this->once())->method("get")->with("_route", null, false)->will($this->returnValue("someOtherRoute"));
     	$lookUpMock->expects($this->once())->method("getCountry")->with($this->chIP)->will($this->returnValue("CH"));
     	$eventBlockMock->expects($this->never())->method("setResponse");
     	$eventBlockMock->expects($this->never())->method("stopPropagation");
 
-    	$geoBlockingListener = new GeoBlockingKernelRequestListener($this->getTemplatingMock(false), $lookUpMock, $loggerMock, $parameters);
+    	$geoBlockingListener = new GeoBlockingKernelRequestListener($this->getTemplatingMock(false), $lookUpMock, $loggerMock, $containerMock, $parameters);
     	$geoBlockingListener->onKernelRequest($eventBlockMock);
    }
 
@@ -247,16 +316,23 @@ class GeoBlockingKernelRequestListenerTest extends \PHPUnit_Framework_TestCase{
 		$lookUpMock = $this->getMockBuilder("Azine\GeoBlockingBundle\Adapter\DefaultLookupAdapter")->getMock();
 		$loggerMock = $this->getMockBuilder("Psr\Log\LoggerInterface")->disableOriginalConstructor()->getMock();
 
+		$containerMock = $this->getMockBuilder("Symfony\Component\DependencyInjection\Container")->disableOriginalConstructor()->getMock();
+		$securityContextMock = $this->getMockBuilder("Symfony\Component\Security\Core\SecurityContext")->disableOriginalConstructor()->getMock();
+		$tokenMock = $this->getMockBuilder("Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken")->disableOriginalConstructor()->getMock();
+
+		$tokenMock->expects($this->once())->method("getUser")->will($this->returnValue(null));
+		$securityContextMock->expects($this->once())->method("getToken")->will($this->returnValue($tokenMock));
+		$containerMock->expects($this->once())->method("get")->will($this->returnValue($securityContextMock));
+
 		$eventBlockMock->expects($this->once())->method("getRequestType")->will($this->returnValue(HttpKernelInterface::MASTER_REQUEST));
 		$eventBlockMock->expects($this->once())->method("getRequest")->will($this->returnValue($requestMock));
-		$requestMock->expects($this->once())->method("getUser")->will($this->returnValue(null));
 		$requestMock->expects($this->once())->method("getClientIp")->will($this->returnValue($this->chIP));
 		$requestMock->expects($this->once())->method("get")->with("_route", null, false)->will($this->returnValue("noWhiteListRoute"));
 		$lookUpMock->expects($this->once())->method("getCountry")->with($this->chIP)->will($this->returnValue("CH"));
 		$eventBlockMock->expects($this->never())->method("setResponse");
 		$eventBlockMock->expects($this->never())->method("stopPropagation");
 
-		$geoBlockingListener = new GeoBlockingKernelRequestListener($this->getTemplatingMock(false), $lookUpMock, $loggerMock, $parameters);
+		$geoBlockingListener = new GeoBlockingKernelRequestListener($this->getTemplatingMock(false), $lookUpMock, $loggerMock, $containerMock, $parameters);
 		$geoBlockingListener->onKernelRequest($eventBlockMock);
 	}
 
@@ -270,16 +346,23 @@ class GeoBlockingKernelRequestListenerTest extends \PHPUnit_Framework_TestCase{
 		$lookUpMock = $this->getMockBuilder("Azine\GeoBlockingBundle\Adapter\DefaultLookupAdapter")->getMock();
 		$loggerMock = $this->getMockBuilder("Psr\Log\LoggerInterface")->disableOriginalConstructor()->getMock();
 
+		$containerMock = $this->getMockBuilder("Symfony\Component\DependencyInjection\Container")->disableOriginalConstructor()->getMock();
+		$securityContextMock = $this->getMockBuilder("Symfony\Component\Security\Core\SecurityContext")->disableOriginalConstructor()->getMock();
+		$tokenMock = $this->getMockBuilder("Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken")->disableOriginalConstructor()->getMock();
+
+		$tokenMock->expects($this->once())->method("getUser")->will($this->returnValue(null));
+		$securityContextMock->expects($this->once())->method("getToken")->will($this->returnValue($tokenMock));
+		$containerMock->expects($this->once())->method("get")->will($this->returnValue($securityContextMock));
+
 		$eventBlockMock->expects($this->once())->method("getRequestType")->will($this->returnValue(HttpKernelInterface::MASTER_REQUEST));
 		$eventBlockMock->expects($this->once())->method("getRequest")->will($this->returnValue($requestMock));
-		$requestMock->expects($this->once())->method("getUser")->will($this->returnValue(null));
 		$requestMock->expects($this->once())->method("getClientIp")->will($this->returnValue($this->usIP));
 		$requestMock->expects($this->once())->method("get")->with("_route", null, false)->will($this->returnValue("noWhiteListRoute"));
 		$lookUpMock->expects($this->once())->method("getCountry")->with($this->usIP)->will($this->returnValue("US"));
 		$eventBlockMock->expects($this->once())->method("setResponse");
 		$eventBlockMock->expects($this->once())->method("stopPropagation");
 
-		$geoBlockingListener = new GeoBlockingKernelRequestListener($this->getTemplatingMock(true), $lookUpMock, $loggerMock, $parameters);
+		$geoBlockingListener = new GeoBlockingKernelRequestListener($this->getTemplatingMock(true), $lookUpMock, $loggerMock, $containerMock, $parameters);
 		$geoBlockingListener->onKernelRequest($eventBlockMock);
 	}
 
@@ -295,16 +378,23 @@ class GeoBlockingKernelRequestListenerTest extends \PHPUnit_Framework_TestCase{
 		$lookUpMock = $this->getMockBuilder("Azine\GeoBlockingBundle\Adapter\DefaultLookupAdapter")->getMock();
 		$loggerMock = $this->getMockBuilder("Psr\Log\LoggerInterface")->disableOriginalConstructor()->getMock();
 
+		$containerMock = $this->getMockBuilder("Symfony\Component\DependencyInjection\Container")->disableOriginalConstructor()->getMock();
+		$securityContextMock = $this->getMockBuilder("Symfony\Component\Security\Core\SecurityContext")->disableOriginalConstructor()->getMock();
+		$tokenMock = $this->getMockBuilder("Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken")->disableOriginalConstructor()->getMock();
+
+		$tokenMock->expects($this->once())->method("getUser")->will($this->returnValue(null));
+		$securityContextMock->expects($this->once())->method("getToken")->will($this->returnValue($tokenMock));
+		$containerMock->expects($this->once())->method("get")->will($this->returnValue($securityContextMock));
+
 		$eventBlockMock->expects($this->once())->method("getRequestType")->will($this->returnValue(HttpKernelInterface::MASTER_REQUEST));
 		$eventBlockMock->expects($this->once())->method("getRequest")->will($this->returnValue($requestMock));
-		$requestMock->expects($this->once())->method("getUser")->will($this->returnValue(null));
 		$requestMock->expects($this->once())->method("getClientIp")->will($this->returnValue($this->usIP));
 		$requestMock->expects($this->once())->method("get")->with("_route", null, false)->will($this->returnValue("random_route"));
 		$lookUpMock->expects($this->once())->method("getCountry")->with($this->usIP)->will($this->returnValue("US"));
 		$eventBlockMock->expects($this->once())->method("setResponse");
 		$eventBlockMock->expects($this->once())->method("stopPropagation");
 
-		$geoBlockingListener = new GeoBlockingKernelRequestListener($this->getTemplatingMock(true), $lookUpMock, $loggerMock, $parameters);
+		$geoBlockingListener = new GeoBlockingKernelRequestListener($this->getTemplatingMock(true), $lookUpMock, $loggerMock, $containerMock, $parameters);
 		$geoBlockingListener->onKernelRequest($eventBlockMock);
 	}
 
@@ -321,16 +411,23 @@ class GeoBlockingKernelRequestListenerTest extends \PHPUnit_Framework_TestCase{
 		$lookUpMock = $this->getMockBuilder("Azine\GeoBlockingBundle\Adapter\DefaultLookupAdapter")->getMock();
 		$loggerMock = $this->getMockBuilder("Psr\Log\LoggerInterface")->disableOriginalConstructor()->getMock();
 
+		$containerMock = $this->getMockBuilder("Symfony\Component\DependencyInjection\Container")->disableOriginalConstructor()->getMock();
+		$securityContextMock = $this->getMockBuilder("Symfony\Component\Security\Core\SecurityContext")->disableOriginalConstructor()->getMock();
+		$tokenMock = $this->getMockBuilder("Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken")->disableOriginalConstructor()->getMock();
+
+		$tokenMock->expects($this->once())->method("getUser")->will($this->returnValue(null));
+		$securityContextMock->expects($this->once())->method("getToken")->will($this->returnValue($tokenMock));
+		$containerMock->expects($this->once())->method("get")->will($this->returnValue($securityContextMock));
+
 		$eventBlockMock->expects($this->once())->method("getRequestType")->will($this->returnValue(HttpKernelInterface::MASTER_REQUEST));
 		$eventBlockMock->expects($this->once())->method("getRequest")->will($this->returnValue($requestMock));
-		$requestMock->expects($this->once())->method("getUser")->will($this->returnValue(null));
 		$requestMock->expects($this->once())->method("getClientIp")->will($this->returnValue($this->chIP));
 		$requestMock->expects($this->once())->method("get")->with("_route", null, false)->will($this->returnValue("noWhiteListRoute"));
 		$lookUpMock->expects($this->once())->method("getCountry")->with($this->chIP)->will($this->returnValue("CH"));
 		$eventBlockMock->expects($this->never())->method("setResponse");
 		$eventBlockMock->expects($this->never())->method("stopPropagation");
 
-		$geoBlockingListener = new GeoBlockingKernelRequestListener($this->getTemplatingMock(false), $lookUpMock, $loggerMock, $parameters);
+		$geoBlockingListener = new GeoBlockingKernelRequestListener($this->getTemplatingMock(false), $lookUpMock, $loggerMock, $containerMock, $parameters);
 		$geoBlockingListener->onKernelRequest($eventBlockMock);
     }
 
@@ -343,16 +440,23 @@ class GeoBlockingKernelRequestListenerTest extends \PHPUnit_Framework_TestCase{
     	$lookUpMock = $this->getMockBuilder("Azine\GeoBlockingBundle\Adapter\DefaultLookupAdapter")->getMock();
     	$loggerMock = $this->getMockBuilder("Psr\Log\LoggerInterface")->disableOriginalConstructor()->getMock();
 
+    	$containerMock = $this->getMockBuilder("Symfony\Component\DependencyInjection\Container")->disableOriginalConstructor()->getMock();
+    	$securityContextMock = $this->getMockBuilder("Symfony\Component\Security\Core\SecurityContext")->disableOriginalConstructor()->getMock();
+    	$tokenMock = $this->getMockBuilder("Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken")->disableOriginalConstructor()->getMock();
+
+    	$tokenMock->expects($this->once())->method("getUser")->will($this->returnValue(null));
+    	$securityContextMock->expects($this->once())->method("getToken")->will($this->returnValue($tokenMock));
+    	$containerMock->expects($this->once())->method("get")->will($this->returnValue($securityContextMock));
+
     	$eventBlockMock->expects($this->once())->method("getRequestType")->will($this->returnValue(HttpKernelInterface::MASTER_REQUEST));
     	$eventBlockMock->expects($this->once())->method("getRequest")->will($this->returnValue($requestMock));
-    	$requestMock->expects($this->once())->method("getUser")->will($this->returnValue(null));
     	$requestMock->expects($this->once())->method("getClientIp")->will($this->returnValue($this->googleBotIP));
 		$requestMock->expects($this->once())->method("get")->with("_route", null, false)->will($this->returnValue("random_route"));
 		$lookUpMock->expects($this->once())->method("getCountry")->with($this->googleBotIP)->will($this->returnValue("US"));
     	$eventBlockMock->expects($this->never())->method("setResponse");
     	$eventBlockMock->expects($this->never())->method("stopPropagation");
 
-    	$geoBlockingListener = new GeoBlockingKernelRequestListener($this->getTemplatingMock(false), $lookUpMock, $loggerMock, $parameters);
+    	$geoBlockingListener = new GeoBlockingKernelRequestListener($this->getTemplatingMock(false), $lookUpMock, $loggerMock, $containerMock, $parameters);
     	$geoBlockingListener->onKernelRequest($eventBlockMock);
 
     }
@@ -366,9 +470,16 @@ class GeoBlockingKernelRequestListenerTest extends \PHPUnit_Framework_TestCase{
     	$lookUpMock = $this->getMockBuilder("Azine\GeoBlockingBundle\Adapter\DefaultLookupAdapter")->getMock();
     	$loggerMock = $this->getMockBuilder("Psr\Log\LoggerInterface")->disableOriginalConstructor()->getMock();
 
+    	$containerMock = $this->getMockBuilder("Symfony\Component\DependencyInjection\Container")->disableOriginalConstructor()->getMock();
+    	$securityContextMock = $this->getMockBuilder("Symfony\Component\Security\Core\SecurityContext")->disableOriginalConstructor()->getMock();
+    	$tokenMock = $this->getMockBuilder("Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken")->disableOriginalConstructor()->getMock();
+
+    	$tokenMock->expects($this->once())->method("getUser")->will($this->returnValue(null));
+    	$securityContextMock->expects($this->once())->method("getToken")->will($this->returnValue($tokenMock));
+    	$containerMock->expects($this->once())->method("get")->will($this->returnValue($securityContextMock));
+
     	$eventBlockMock->expects($this->once())->method("getRequestType")->will($this->returnValue(HttpKernelInterface::MASTER_REQUEST));
     	$eventBlockMock->expects($this->once())->method("getRequest")->will($this->returnValue($requestMock));
-    	$requestMock->expects($this->once())->method("getUser")->will($this->returnValue(null));
     	$requestMock->expects($this->once())->method("getClientIp")->will($this->returnValue($this->googleBotIP));
 		$requestMock->expects($this->once())->method("get")->with("_route", null, false)->will($this->returnValue("random_route"));
 		$lookUpMock->expects($this->once())->method("getCountry")->with($this->googleBotIP)->will($this->returnValue("US"));
@@ -378,7 +489,7 @@ class GeoBlockingKernelRequestListenerTest extends \PHPUnit_Framework_TestCase{
     	$loggerMock->expects($this->never())->method("warning");
 
 
-    	$geoBlockingListener = new GeoBlockingKernelRequestListener($this->getTemplatingMock(false), $lookUpMock, $loggerMock, $parameters);
+    	$geoBlockingListener = new GeoBlockingKernelRequestListener($this->getTemplatingMock(false), $lookUpMock, $loggerMock, $containerMock, $parameters);
     	$geoBlockingListener->onKernelRequest($eventBlockMock);
 
     }
@@ -398,9 +509,16 @@ class GeoBlockingKernelRequestListenerTest extends \PHPUnit_Framework_TestCase{
     	$lookUpMock = $this->getMockBuilder("Azine\GeoBlockingBundle\Adapter\DefaultLookupAdapter")->getMock();
     	$loggerMock = $this->getMockBuilder("Psr\Log\LoggerInterface")->disableOriginalConstructor()->getMock();
 
+    	$containerMock = $this->getMockBuilder("Symfony\Component\DependencyInjection\Container")->disableOriginalConstructor()->getMock();
+    	$securityContextMock = $this->getMockBuilder("Symfony\Component\Security\Core\SecurityContext")->disableOriginalConstructor()->getMock();
+    	$tokenMock = $this->getMockBuilder("Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken")->disableOriginalConstructor()->getMock();
+
+    	$tokenMock->expects($this->once())->method("getUser")->will($this->returnValue(null));
+    	$securityContextMock->expects($this->once())->method("getToken")->will($this->returnValue($tokenMock));
+    	$containerMock->expects($this->once())->method("get")->will($this->returnValue($securityContextMock));
+
     	$eventBlockMock->expects($this->once())->method("getRequestType")->will($this->returnValue(HttpKernelInterface::MASTER_REQUEST));
     	$eventBlockMock->expects($this->exactly(2))->method("getRequest")->will($this->returnValue($requestMock));
-    	$requestMock->expects($this->once())->method("getUser")->will($this->returnValue(null));
     	$requestMock->expects($this->exactly(2))->method("getClientIp")->will($this->returnValue($this->usIP));
     	$requestMock->expects($this->exactly(2))->method("get")->with("_route", null, false)->will($this->returnValue("random_route"));
     	$lookUpMock->expects($this->once())->method("getCountry")->with($this->usIP)->will($this->returnValue("US"));
@@ -409,7 +527,7 @@ class GeoBlockingKernelRequestListenerTest extends \PHPUnit_Framework_TestCase{
 
 		$loggerMock->expects($this->exactly(2))->method("warning");
 
-    	$geoBlockingListener = new GeoBlockingKernelRequestListener($this->getTemplatingMock(true), $lookUpMock, $loggerMock, $parameters);
+    	$geoBlockingListener = new GeoBlockingKernelRequestListener($this->getTemplatingMock(true), $lookUpMock, $loggerMock, $containerMock, $parameters);
     	$geoBlockingListener->onKernelRequest($eventBlockMock);
 
     }
@@ -423,9 +541,16 @@ class GeoBlockingKernelRequestListenerTest extends \PHPUnit_Framework_TestCase{
     	$lookUpMock = $this->getMockBuilder("Azine\GeoBlockingBundle\Adapter\DefaultLookupAdapter")->getMock();
     	$loggerMock = $this->getMockBuilder("Psr\Log\LoggerInterface")->disableOriginalConstructor()->getMock();
 
+    	$containerMock = $this->getMockBuilder("Symfony\Component\DependencyInjection\Container")->disableOriginalConstructor()->getMock();
+    	$securityContextMock = $this->getMockBuilder("Symfony\Component\Security\Core\SecurityContext")->disableOriginalConstructor()->getMock();
+    	$tokenMock = $this->getMockBuilder("Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken")->disableOriginalConstructor()->getMock();
+
+    	$tokenMock->expects($this->once())->method("getUser")->will($this->returnValue(null));
+    	$securityContextMock->expects($this->once())->method("getToken")->will($this->returnValue($tokenMock));
+    	$containerMock->expects($this->once())->method("get")->will($this->returnValue($securityContextMock));
+
     	$eventBlockMock->expects($this->once())->method("getRequestType")->will($this->returnValue(HttpKernelInterface::MASTER_REQUEST));
     	$eventBlockMock->expects($this->once())->method("getRequest")->will($this->returnValue($requestMock));
-    	$requestMock->expects($this->once())->method("getUser")->will($this->returnValue(null));
     	$requestMock->expects($this->once())->method("getClientIp")->will($this->returnValue($this->googleBotIP));
     	$requestMock->expects($this->once())->method("get")->with("_route", null, false)->will($this->returnValue("random_route"));
     	$lookUpMock->expects($this->once())->method("getCountry")->with($this->googleBotIP)->will($this->returnValue("US"));
@@ -435,7 +560,7 @@ class GeoBlockingKernelRequestListenerTest extends \PHPUnit_Framework_TestCase{
     	$loggerMock->expects($this->never())->method("warning");
 
 
-    	$geoBlockingListener = new GeoBlockingKernelRequestListener($this->getTemplatingMock(false), $lookUpMock, $loggerMock, $parameters);
+    	$geoBlockingListener = new GeoBlockingKernelRequestListener($this->getTemplatingMock(false), $lookUpMock, $loggerMock, $containerMock, $parameters);
     	$geoBlockingListener->onKernelRequest($eventBlockMock);
     }
 
@@ -448,9 +573,16 @@ class GeoBlockingKernelRequestListenerTest extends \PHPUnit_Framework_TestCase{
     	$lookUpMock = $this->getMockBuilder("Azine\GeoBlockingBundle\Adapter\DefaultLookupAdapter")->getMock();
     	$loggerMock = $this->getMockBuilder("Psr\Log\LoggerInterface")->disableOriginalConstructor()->getMock();
 
+    	$containerMock = $this->getMockBuilder("Symfony\Component\DependencyInjection\Container")->disableOriginalConstructor()->getMock();
+    	$securityContextMock = $this->getMockBuilder("Symfony\Component\Security\Core\SecurityContext")->disableOriginalConstructor()->getMock();
+    	$tokenMock = $this->getMockBuilder("Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken")->disableOriginalConstructor()->getMock();
+
+    	$tokenMock->expects($this->once())->method("getUser")->will($this->returnValue(null));
+    	$securityContextMock->expects($this->once())->method("getToken")->will($this->returnValue($tokenMock));
+    	$containerMock->expects($this->once())->method("get")->will($this->returnValue($securityContextMock));
+
     	$eventBlockMock->expects($this->once())->method("getRequestType")->will($this->returnValue(HttpKernelInterface::MASTER_REQUEST));
     	$eventBlockMock->expects($this->once())->method("getRequest")->will($this->returnValue($requestMock));
-    	$requestMock->expects($this->once())->method("getUser")->will($this->returnValue(null));
     	$requestMock->expects($this->once())->method("getClientIp")->will($this->returnValue($this->msnBotIP));
     	$requestMock->expects($this->once())->method("get")->with("_route", null, false)->will($this->returnValue("random_route"));
     	$lookUpMock->expects($this->once())->method("getCountry")->with($this->msnBotIP)->will($this->returnValue("US"));
@@ -460,7 +592,7 @@ class GeoBlockingKernelRequestListenerTest extends \PHPUnit_Framework_TestCase{
     	$loggerMock->expects($this->never())->method("warning");
 
 
-    	$geoBlockingListener = new GeoBlockingKernelRequestListener($this->getTemplatingMock(false), $lookUpMock, $loggerMock, $parameters);
+    	$geoBlockingListener = new GeoBlockingKernelRequestListener($this->getTemplatingMock(false), $lookUpMock, $loggerMock, $containerMock, $parameters);
     	$geoBlockingListener->onKernelRequest($eventBlockMock);
     }
 
@@ -474,9 +606,16 @@ class GeoBlockingKernelRequestListenerTest extends \PHPUnit_Framework_TestCase{
     	$lookUpMock = $this->getMockBuilder("Azine\GeoBlockingBundle\Adapter\DefaultLookupAdapter")->getMock();
     	$loggerMock = $this->getMockBuilder("Psr\Log\LoggerInterface")->disableOriginalConstructor()->getMock();
 
+    	$containerMock = $this->getMockBuilder("Symfony\Component\DependencyInjection\Container")->disableOriginalConstructor()->getMock();
+    	$securityContextMock = $this->getMockBuilder("Symfony\Component\Security\Core\SecurityContext")->disableOriginalConstructor()->getMock();
+    	$tokenMock = $this->getMockBuilder("Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken")->disableOriginalConstructor()->getMock();
+
+    	$tokenMock->expects($this->once())->method("getUser")->will($this->returnValue(null));
+    	$securityContextMock->expects($this->once())->method("getToken")->will($this->returnValue($tokenMock));
+    	$containerMock->expects($this->once())->method("get")->will($this->returnValue($securityContextMock));
+
     	$eventBlockMock->expects($this->once())->method("getRequestType")->will($this->returnValue(HttpKernelInterface::MASTER_REQUEST));
     	$eventBlockMock->expects($this->once())->method("getRequest")->will($this->returnValue($requestMock));
-    	$requestMock->expects($this->once())->method("getUser")->will($this->returnValue(null));
     	$requestMock->expects($this->once())->method("getClientIp")->will($this->returnValue($this->usIP));
     	$requestMock->expects($this->once())->method("get")->with("_route", null, false)->will($this->returnValue("random_route"));
     	$lookUpMock->expects($this->once())->method("getCountry")->with($this->usIP)->will($this->returnValue("US"));
@@ -484,7 +623,7 @@ class GeoBlockingKernelRequestListenerTest extends \PHPUnit_Framework_TestCase{
     	$eventBlockMock->expects($this->once())->method("setResponse");
     	$eventBlockMock->expects($this->once())->method("stopPropagation");
 
-    	$geoBlockingListener = new GeoBlockingKernelRequestListener($this->getTemplatingMock(true), $lookUpMock, $loggerMock, $parameters);
+    	$geoBlockingListener = new GeoBlockingKernelRequestListener($this->getTemplatingMock(true), $lookUpMock, $loggerMock, $containerMock, $parameters);
     	$geoBlockingListener->onKernelRequest($eventBlockMock);
     }
 
