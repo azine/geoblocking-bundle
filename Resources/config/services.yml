@@ -10,6 +10,7 @@ services:
                 templating:        "@templating"
                 lookupAdapter:     "@azine_geo_blocking_lookup_adapter"
                 logger:            "@logger"
+                container:         "@service_container"
                 parameters:
                     blockAnonOnly:       "%azine_geo_blocking_block_anonymouse_users_only%"
                     countryWhitelist:    "%azine_geo_blocking_countries_whitelist%"   

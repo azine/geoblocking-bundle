@@ -1,6 +1,8 @@
 <?php
 namespace Azine\GeoBlockingBundle\EventListener;
 
+use Symfony\Component\DependencyInjection\Container;
+
 use Psr\Log\LoggerInterface;
 
 use FOS\UserBundle\Model\UserInterface;
@@ -18,13 +20,15 @@ class GeoBlockingKernelRequestListener{
 	private $lookUpAdapter;
 	private $templating;
 	private $logger;
+	private $container;
 
 
-	public function __construct(EngineInterface $templating, GeoIpLookupAdapterInterface $lookupAdapter, LoggerInterface $logger,  array $parameters){
+	public function __construct(EngineInterface $templating, GeoIpLookupAdapterInterface $lookupAdapter, LoggerInterface $logger, Container $container,  array $parameters){
 		$this->configParams = $parameters;
 		$this->lookUpAdapter 	= $lookupAdapter;
 		$this->templating = $templating;
 		$this->logger = $logger;
+		$this->container = $container;
 	}
 
 	public function onKernelRequest(GetResponseEvent $event)
@@ -42,7 +46,7 @@ class GeoBlockingKernelRequestListener{
 
 		$request = $event->getRequest();
 		// check if blocking authenticated users is enabled
-		$authenticated = $request->getUser() instanceof UserInterface;
+		$authenticated = $this->container->get('security.context')->getToken()->getUser() instanceof UserInterface;
 		if($this->configParams['blockAnonOnly'] && $authenticated){
 			$this->logger->info("azine_geoblocking_bundle: allowed logged-in user");
 			return;
