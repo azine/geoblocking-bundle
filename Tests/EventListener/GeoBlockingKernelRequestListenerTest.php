@@ -494,6 +494,39 @@ class GeoBlockingKernelRequestListenerTest extends \PHPUnit_Framework_TestCase{
 
     }
 
+    public function testOnKernelRequestGeoBlocking_IP_WhiteList_deny_ip(){
+    	$parameters = $this->getDefaultParams();
+    	$parameters['ip_whitelist'] = array($this->googleBotIP);
+    	$eventBlockMock = $this->getMockBuilder("Symfony\Component\HttpKernel\Event\GetResponseEvent")->disableOriginalConstructor()->getMock();
+    	$requestMock = $this->getMockBuilder("Symfony\Component\HttpFoundation\Request")->disableOriginalConstructor()->getMock();
+    	$userMock = $this->getMockBuilder("FOS\UserBundle\Model\UserInterface")->disableOriginalConstructor()->getMock();
+    	$lookUpMock = $this->getMockBuilder("Azine\GeoBlockingBundle\Adapter\DefaultLookupAdapter")->getMock();
+    	$loggerMock = $this->getMockBuilder("Psr\Log\LoggerInterface")->disableOriginalConstructor()->getMock();
+
+    	$containerMock = $this->getMockBuilder("Symfony\Component\DependencyInjection\Container")->disableOriginalConstructor()->getMock();
+    	$securityContextMock = $this->getMockBuilder("Symfony\Component\Security\Core\SecurityContext")->disableOriginalConstructor()->getMock();
+    	$tokenMock = $this->getMockBuilder("Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken")->disableOriginalConstructor()->getMock();
+
+    	$tokenMock->expects($this->once())->method("getUser")->will($this->returnValue(null));
+    	$securityContextMock->expects($this->once())->method("getToken")->will($this->returnValue($tokenMock));
+    	$containerMock->expects($this->once())->method("get")->will($this->returnValue($securityContextMock));
+
+    	$eventBlockMock->expects($this->once())->method("getRequestType")->will($this->returnValue(HttpKernelInterface::MASTER_REQUEST));
+    	$eventBlockMock->expects($this->once())->method("getRequest")->will($this->returnValue($requestMock));
+    	$requestMock->expects($this->once())->method("getClientIp")->will($this->returnValue($this->usIP));
+    	$requestMock->expects($this->once())->method("get")->with("_route", null, false)->will($this->returnValue("random_route"));
+    	$lookUpMock->expects($this->once())->method("getCountry")->with($this->usIP)->will($this->returnValue("US"));
+    	$eventBlockMock->expects($this->once())->method("setResponse");
+    	$eventBlockMock->expects($this->once())->method("stopPropagation");
+
+    	$loggerMock->expects($this->once())->method("warning");
+
+
+    	$geoBlockingListener = new GeoBlockingKernelRequestListener($this->getTemplatingMock(true), $lookUpMock, $loggerMock, $containerMock, $parameters);
+    	$geoBlockingListener->onKernelRequest($eventBlockMock);
+
+    }
+
     public function testOnKernelRequestGeoBlocking_Log_Blocked_Requests(){
     	$parameters = $this->getDefaultParams();
     	$parameters["routeWhitelist"] = array();

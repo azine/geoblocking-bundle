@@ -15,14 +15,12 @@ class MaxmindLookupAdapterTest extends \PHPUnit_Framework_TestCase{
 		$adapter = new MaxmindLookupAdapter($container);
 	}
 
-//     public function testGetCountryMaxmindGeoIPBundleInstalled(){
-
-//     	$container = $this->getMockBuilder("Symfony\Component\DependencyInjection\Container")->disableOriginalConstructor()->getMockForAbstractClass();
-//     	$container->
-//     	$adapter = new MaxmindLookupAdapter($container);
-
-//     	$country = $adapter->getCountry("8.8.8.8");
-
-//     	$this->assertEquals("US", $country);
-//     }
+     public function testGetCountryMaxmindGeoIPBundleInstalled(){
+     	$container = $this->getMockBuilder("Symfony\Component\DependencyInjection\ContainerInterface")->getMock();
+     	$container->expects($this->once())->method("hasParameter")->with('maxmind_geoip_data_file_path')->will($this->returnValue(__DIR__."/GeoLiteCity.dat"));
+     	$container->expects($this->once())->method("getParameter")->with('maxmind_geoip_data_file_path')->will($this->returnValue(__DIR__."/GeoLiteCity.dat"));
+     	$adapter = new MaxmindLookupAdapter($container);
+     	$country = $adapter->getCountry("8.8.8.8");
+     	$this->assertEquals("US", $country);
+     }
 }
