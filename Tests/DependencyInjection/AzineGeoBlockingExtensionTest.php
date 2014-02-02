@@ -186,20 +186,6 @@ EOF;
 		$this->assertEquals($value, $this->configuration->getParameter($key), sprintf('%s parameter is correct', $key));
 	}
 
-	/**
-	 * @param string $id
-	 */
-	private function assertHasDefinition($id){
-		$this->assertTrue(($this->configuration->hasDefinition($id) ?: $this->configuration->hasAlias($id)));
-	}
-
-	/**
-	 * @param string $id
-	 */
-	private function assertNotHasDefinition($id){
-		$this->assertFalse(($this->configuration->hasDefinition($id) ?: $this->configuration->hasAlias($id)));
-	}
-
 	protected function tearDown(){
 		unset($this->configuration);
 	}

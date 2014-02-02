@@ -184,7 +184,7 @@ class GeoBlockingKernelRequestListener{
 			$searchEngineDomains = $this->configParams['search_bot_domains'];
 
 			$isSearchEngineDomain = false;
-			$uagent = $_SERVER['HTTP_USER_AGENT'];
+
 			foreach ($searchEngineDomains as $domain){
 
 				// if the hostname ends with any of the search-engine-domain names

@@ -12,7 +12,7 @@ class MaxmindLookupAdapterTest extends \PHPUnit_Framework_TestCase{
 	public function testGetCountryMaxmindGeoIPBundleNotInstalled(){
 		$container = $this->getMockBuilder("Symfony\Component\DependencyInjection\ContainerInterface")->getMock();
 		$container->expects($this->once())->method("hasParameter")->with('maxmind_geoip_data_file_path')->will($this->returnValue(false));
-		$adapter = new MaxmindLookupAdapter($container);
+		new MaxmindLookupAdapter($container);
 	}
 
      public function testGetCountryMaxmindGeoIPBundleInstalled(){
