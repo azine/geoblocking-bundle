@@ -5,7 +5,7 @@ use Symfony\Component\DependencyInjection\Container;
 
 use Psr\Log\LoggerInterface;
 
-use FOS\UserBundle\Model\UserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
@@ -23,6 +23,13 @@ class GeoBlockingKernelRequestListener{
 	private $container;
 
 
+	/**
+	 * @param EngineInterface $templating
+	 * @param GeoIpLookupAdapterInterface $lookupAdapter
+	 * @param LoggerInterface $logger
+	 * @param Container $container
+	 * @param array $parameters
+	 */
 	public function __construct(EngineInterface $templating, GeoIpLookupAdapterInterface $lookupAdapter, LoggerInterface $logger, Container $container,  array $parameters){
 		$this->configParams = $parameters;
 		$this->lookUpAdapter 	= $lookupAdapter;
@@ -31,6 +38,9 @@ class GeoBlockingKernelRequestListener{
 		$this->container = $container;
 	}
 
+	/**
+	 * @param GetResponseEvent $event
+	 */
 	public function onKernelRequest(GetResponseEvent $event)
 	{
 		// ignore sub-requests
@@ -122,6 +132,10 @@ class GeoBlockingKernelRequestListener{
 		return;
 	}
 
+	/**
+	 * @param GetResponseEvent $event
+	 * @param string $country
+	 */
 	private function blockAccess(GetResponseEvent $event, $country){
 		// render the "sorry you are not allowed here"-page
 		$parameters = array('loginRoute' => $this->configParams['loginRoute'], 'country' => $country);
@@ -138,6 +152,10 @@ class GeoBlockingKernelRequestListener{
 		}
 	}
 
+	/**
+	 * @param string $ip
+	 * @return boolean
+	 */
 	private function isAllowedByIpWhiteListConfig($ip){
 		if($this->configParams['ip_whitelist']){
 			foreach ($this->configParams['ip_whitelist'] as $pattern){
@@ -149,6 +167,10 @@ class GeoBlockingKernelRequestListener{
 		return false;
 	}
 
+	/**
+	 * @param string $ip
+	 * @return boolean
+	 */
 	private function isAllowedBecauseIpIsSearchEngingeCrawler($ip){
 		if($this->configParams['allow_search_bots']){
 
