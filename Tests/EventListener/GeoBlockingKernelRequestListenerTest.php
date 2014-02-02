@@ -84,7 +84,7 @@ class GeoBlockingKernelRequestListenerTest extends \PHPUnit_Framework_TestCase{
     	$securityContextMock = $this->getMockBuilder("Symfony\Component\Security\Core\SecurityContext")->disableOriginalConstructor()->getMock();
     	$tokenMock = $this->getMockBuilder("Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken")->disableOriginalConstructor()->getMock();
 
-    	$tokenMock->expects($this->once())->method("getUser")->will($this->returnValue($this->getMockBuilder("FOS\UserBundle\Model\UserInterface")->disableOriginalConstructor()->getMock()));
+    	$tokenMock->expects($this->once())->method("getUser")->will($this->returnValue($this->getMockBuilder("Symfony\Component\Security\Core\User\UserInterface")->disableOriginalConstructor()->getMock()));
     	$securityContextMock->expects($this->once())->method("getToken")->will($this->returnValue($tokenMock));
     	$containerMock->expects($this->once())->method("get")->will($this->returnValue($securityContextMock));
 
@@ -131,14 +131,14 @@ class GeoBlockingKernelRequestListenerTest extends \PHPUnit_Framework_TestCase{
     	$parameters = $this->getDefaultParams();
     	$eventBlockMock = $this->getMockBuilder("Symfony\Component\HttpKernel\Event\GetResponseEvent")->disableOriginalConstructor()->getMock();
     	$requestMock = $this->getMockBuilder("Symfony\Component\HttpFoundation\Request")->disableOriginalConstructor()->getMock();
-    	$userMock = $this->getMockBuilder("FOS\UserBundle\Model\UserInterface")->disableOriginalConstructor()->getMock();
+    	$userMock = $this->getMockBuilder("Symfony\Component\Security\Core\User\UserInterface")->disableOriginalConstructor()->getMock();
     	$loggerMock = $this->getMockBuilder("Psr\Log\LoggerInterface")->disableOriginalConstructor()->getMock();
 
     	$containerMock = $this->getMockBuilder("Symfony\Component\DependencyInjection\Container")->disableOriginalConstructor()->getMock();
     	$securityContextMock = $this->getMockBuilder("Symfony\Component\Security\Core\SecurityContext")->disableOriginalConstructor()->getMock();
     	$tokenMock = $this->getMockBuilder("Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken")->disableOriginalConstructor()->getMock();
 
-    	$tokenMock->expects($this->once())->method("getUser")->will($this->returnValue($this->getMockBuilder("FOS\UserBundle\Model\UserInterface")->disableOriginalConstructor()->getMock()));
+    	$tokenMock->expects($this->once())->method("getUser")->will($this->returnValue($this->getMockBuilder("Symfony\Component\Security\Core\User\UserInterface")->disableOriginalConstructor()->getMock()));
     	$securityContextMock->expects($this->once())->method("getToken")->will($this->returnValue($tokenMock));
     	$containerMock->expects($this->once())->method("get")->will($this->returnValue($securityContextMock));
 
@@ -158,7 +158,7 @@ class GeoBlockingKernelRequestListenerTest extends \PHPUnit_Framework_TestCase{
     	$parameters = $this->getDefaultParams();
     	$eventBlockMock = $this->getMockBuilder("Symfony\Component\HttpKernel\Event\GetResponseEvent")->disableOriginalConstructor()->getMock();
     	$requestMock = $this->getMockBuilder("Symfony\Component\HttpFoundation\Request")->disableOriginalConstructor()->getMock();
-    	$userMock = $this->getMockBuilder("FOS\UserBundle\Model\UserInterface")->disableOriginalConstructor()->getMock();
+    	$userMock = $this->getMockBuilder("Symfony\Component\Security\Core\User\UserInterface")->disableOriginalConstructor()->getMock();
     	$lookUpMock = $this->getMockBuilder("Azine\GeoBlockingBundle\Adapter\DefaultLookupAdapter")->getMock();
     	$loggerMock = $this->getMockBuilder("Psr\Log\LoggerInterface")->disableOriginalConstructor()->getMock();
 
@@ -188,7 +188,7 @@ class GeoBlockingKernelRequestListenerTest extends \PHPUnit_Framework_TestCase{
     	$parameters = $this->getDefaultParams();
     	$eventBlockMock = $this->getMockBuilder("Symfony\Component\HttpKernel\Event\GetResponseEvent")->disableOriginalConstructor()->getMock();
     	$requestMock = $this->getMockBuilder("Symfony\Component\HttpFoundation\Request")->disableOriginalConstructor()->getMock();
-    	$userMock = $this->getMockBuilder("FOS\UserBundle\Model\UserInterface")->disableOriginalConstructor()->getMock();
+    	$userMock = $this->getMockBuilder("Symfony\Component\Security\Core\User\UserInterface")->disableOriginalConstructor()->getMock();
     	$lookUpMock = $this->getMockBuilder("Azine\GeoBlockingBundle\Adapter\DefaultLookupAdapter")->getMock();
     	$loggerMock = $this->getMockBuilder("Psr\Log\LoggerInterface")->disableOriginalConstructor()->getMock();
 
@@ -217,7 +217,7 @@ class GeoBlockingKernelRequestListenerTest extends \PHPUnit_Framework_TestCase{
     	$parameters = $this->getDefaultParams();
     	$eventBlockMock = $this->getMockBuilder("Symfony\Component\HttpKernel\Event\GetResponseEvent")->disableOriginalConstructor()->getMock();
     	$requestMock = $this->getMockBuilder("Symfony\Component\HttpFoundation\Request")->disableOriginalConstructor()->getMock();
-    	$userMock = $this->getMockBuilder("FOS\UserBundle\Model\UserInterface")->disableOriginalConstructor()->getMock();
+    	$userMock = $this->getMockBuilder("Symfony\Component\Security\Core\User\UserInterface")->disableOriginalConstructor()->getMock();
     	$lookUpMock = $this->getMockBuilder("Azine\GeoBlockingBundle\Adapter\DefaultLookupAdapter")->getMock();
     	$loggerMock = $this->getMockBuilder("Psr\Log\LoggerInterface")->disableOriginalConstructor()->getMock();
 
@@ -250,7 +250,7 @@ class GeoBlockingKernelRequestListenerTest extends \PHPUnit_Framework_TestCase{
 
     	$eventBlockMock = $this->getMockBuilder("Symfony\Component\HttpKernel\Event\GetResponseEvent")->disableOriginalConstructor()->getMock();
     	$requestMock = $this->getMockBuilder("Symfony\Component\HttpFoundation\Request")->disableOriginalConstructor()->getMock();
-    	$userMock = $this->getMockBuilder("FOS\UserBundle\Model\UserInterface")->disableOriginalConstructor()->getMock();
+    	$userMock = $this->getMockBuilder("Symfony\Component\Security\Core\User\UserInterface")->disableOriginalConstructor()->getMock();
     	$lookUpMock = $this->getMockBuilder("Azine\GeoBlockingBundle\Adapter\DefaultLookupAdapter")->getMock();
     	$loggerMock = $this->getMockBuilder("Psr\Log\LoggerInterface")->disableOriginalConstructor()->getMock();
 
@@ -282,7 +282,7 @@ class GeoBlockingKernelRequestListenerTest extends \PHPUnit_Framework_TestCase{
 
     	$eventBlockMock = $this->getMockBuilder("Symfony\Component\HttpKernel\Event\GetResponseEvent")->disableOriginalConstructor()->getMock();
     	$requestMock = $this->getMockBuilder("Symfony\Component\HttpFoundation\Request")->disableOriginalConstructor()->getMock();
-    	$userMock = $this->getMockBuilder("FOS\UserBundle\Model\UserInterface")->disableOriginalConstructor()->getMock();
+    	$userMock = $this->getMockBuilder("Symfony\Component\Security\Core\User\UserInterface")->disableOriginalConstructor()->getMock();
     	$lookUpMock = $this->getMockBuilder("Azine\GeoBlockingBundle\Adapter\DefaultLookupAdapter")->getMock();
     	$loggerMock = $this->getMockBuilder("Psr\Log\LoggerInterface")->disableOriginalConstructor()->getMock();
 
@@ -312,7 +312,7 @@ class GeoBlockingKernelRequestListenerTest extends \PHPUnit_Framework_TestCase{
 
 		$eventBlockMock = $this->getMockBuilder("Symfony\Component\HttpKernel\Event\GetResponseEvent")->disableOriginalConstructor()->getMock();
 		$requestMock = $this->getMockBuilder("Symfony\Component\HttpFoundation\Request")->disableOriginalConstructor()->getMock();
-		$userMock = $this->getMockBuilder("FOS\UserBundle\Model\UserInterface")->disableOriginalConstructor()->getMock();
+		$userMock = $this->getMockBuilder("Symfony\Component\Security\Core\User\UserInterface")->disableOriginalConstructor()->getMock();
 		$lookUpMock = $this->getMockBuilder("Azine\GeoBlockingBundle\Adapter\DefaultLookupAdapter")->getMock();
 		$loggerMock = $this->getMockBuilder("Psr\Log\LoggerInterface")->disableOriginalConstructor()->getMock();
 
@@ -342,7 +342,7 @@ class GeoBlockingKernelRequestListenerTest extends \PHPUnit_Framework_TestCase{
 
 		$eventBlockMock = $this->getMockBuilder("Symfony\Component\HttpKernel\Event\GetResponseEvent")->disableOriginalConstructor()->getMock();
 		$requestMock = $this->getMockBuilder("Symfony\Component\HttpFoundation\Request")->disableOriginalConstructor()->getMock();
-		$userMock = $this->getMockBuilder("FOS\UserBundle\Model\UserInterface")->disableOriginalConstructor()->getMock();
+		$userMock = $this->getMockBuilder("Symfony\Component\Security\Core\User\UserInterface")->disableOriginalConstructor()->getMock();
 		$lookUpMock = $this->getMockBuilder("Azine\GeoBlockingBundle\Adapter\DefaultLookupAdapter")->getMock();
 		$loggerMock = $this->getMockBuilder("Psr\Log\LoggerInterface")->disableOriginalConstructor()->getMock();
 
@@ -374,7 +374,7 @@ class GeoBlockingKernelRequestListenerTest extends \PHPUnit_Framework_TestCase{
 
 		$eventBlockMock = $this->getMockBuilder("Symfony\Component\HttpKernel\Event\GetResponseEvent")->disableOriginalConstructor()->getMock();
 		$requestMock = $this->getMockBuilder("Symfony\Component\HttpFoundation\Request")->disableOriginalConstructor()->getMock();
-		$userMock = $this->getMockBuilder("FOS\UserBundle\Model\UserInterface")->disableOriginalConstructor()->getMock();
+		$userMock = $this->getMockBuilder("Symfony\Component\Security\Core\User\UserInterface")->disableOriginalConstructor()->getMock();
 		$lookUpMock = $this->getMockBuilder("Azine\GeoBlockingBundle\Adapter\DefaultLookupAdapter")->getMock();
 		$loggerMock = $this->getMockBuilder("Psr\Log\LoggerInterface")->disableOriginalConstructor()->getMock();
 
@@ -407,7 +407,7 @@ class GeoBlockingKernelRequestListenerTest extends \PHPUnit_Framework_TestCase{
 
 		$eventBlockMock = $this->getMockBuilder("Symfony\Component\HttpKernel\Event\GetResponseEvent")->disableOriginalConstructor()->getMock();
 		$requestMock = $this->getMockBuilder("Symfony\Component\HttpFoundation\Request")->disableOriginalConstructor()->getMock();
-		$userMock = $this->getMockBuilder("FOS\UserBundle\Model\UserInterface")->disableOriginalConstructor()->getMock();
+		$userMock = $this->getMockBuilder("Symfony\Component\Security\Core\User\UserInterface")->disableOriginalConstructor()->getMock();
 		$lookUpMock = $this->getMockBuilder("Azine\GeoBlockingBundle\Adapter\DefaultLookupAdapter")->getMock();
 		$loggerMock = $this->getMockBuilder("Psr\Log\LoggerInterface")->disableOriginalConstructor()->getMock();
 
@@ -436,7 +436,7 @@ class GeoBlockingKernelRequestListenerTest extends \PHPUnit_Framework_TestCase{
     	$parameters['ip_whitelist'] = array("/66\.249\.78\.\d{1,3}/");
     	$eventBlockMock = $this->getMockBuilder("Symfony\Component\HttpKernel\Event\GetResponseEvent")->disableOriginalConstructor()->getMock();
     	$requestMock = $this->getMockBuilder("Symfony\Component\HttpFoundation\Request")->disableOriginalConstructor()->getMock();
-    	$userMock = $this->getMockBuilder("FOS\UserBundle\Model\UserInterface")->disableOriginalConstructor()->getMock();
+    	$userMock = $this->getMockBuilder("Symfony\Component\Security\Core\User\UserInterface")->disableOriginalConstructor()->getMock();
     	$lookUpMock = $this->getMockBuilder("Azine\GeoBlockingBundle\Adapter\DefaultLookupAdapter")->getMock();
     	$loggerMock = $this->getMockBuilder("Psr\Log\LoggerInterface")->disableOriginalConstructor()->getMock();
 
@@ -466,7 +466,7 @@ class GeoBlockingKernelRequestListenerTest extends \PHPUnit_Framework_TestCase{
     	$parameters['ip_whitelist'] = array($this->googleBotIP);
     	$eventBlockMock = $this->getMockBuilder("Symfony\Component\HttpKernel\Event\GetResponseEvent")->disableOriginalConstructor()->getMock();
     	$requestMock = $this->getMockBuilder("Symfony\Component\HttpFoundation\Request")->disableOriginalConstructor()->getMock();
-    	$userMock = $this->getMockBuilder("FOS\UserBundle\Model\UserInterface")->disableOriginalConstructor()->getMock();
+    	$userMock = $this->getMockBuilder("Symfony\Component\Security\Core\User\UserInterface")->disableOriginalConstructor()->getMock();
     	$lookUpMock = $this->getMockBuilder("Azine\GeoBlockingBundle\Adapter\DefaultLookupAdapter")->getMock();
     	$loggerMock = $this->getMockBuilder("Psr\Log\LoggerInterface")->disableOriginalConstructor()->getMock();
 
@@ -499,7 +499,7 @@ class GeoBlockingKernelRequestListenerTest extends \PHPUnit_Framework_TestCase{
     	$parameters['ip_whitelist'] = array($this->googleBotIP);
     	$eventBlockMock = $this->getMockBuilder("Symfony\Component\HttpKernel\Event\GetResponseEvent")->disableOriginalConstructor()->getMock();
     	$requestMock = $this->getMockBuilder("Symfony\Component\HttpFoundation\Request")->disableOriginalConstructor()->getMock();
-    	$userMock = $this->getMockBuilder("FOS\UserBundle\Model\UserInterface")->disableOriginalConstructor()->getMock();
+    	$userMock = $this->getMockBuilder("Symfony\Component\Security\Core\User\UserInterface")->disableOriginalConstructor()->getMock();
     	$lookUpMock = $this->getMockBuilder("Azine\GeoBlockingBundle\Adapter\DefaultLookupAdapter")->getMock();
     	$loggerMock = $this->getMockBuilder("Psr\Log\LoggerInterface")->disableOriginalConstructor()->getMock();
 
@@ -538,7 +538,7 @@ class GeoBlockingKernelRequestListenerTest extends \PHPUnit_Framework_TestCase{
 
     	$eventBlockMock = $this->getMockBuilder("Symfony\Component\HttpKernel\Event\GetResponseEvent")->disableOriginalConstructor()->getMock();
     	$requestMock = $this->getMockBuilder("Symfony\Component\HttpFoundation\Request")->disableOriginalConstructor()->getMock();
-    	$userMock = $this->getMockBuilder("FOS\UserBundle\Model\UserInterface")->disableOriginalConstructor()->getMock();
+    	$userMock = $this->getMockBuilder("Symfony\Component\Security\Core\User\UserInterface")->disableOriginalConstructor()->getMock();
     	$lookUpMock = $this->getMockBuilder("Azine\GeoBlockingBundle\Adapter\DefaultLookupAdapter")->getMock();
     	$loggerMock = $this->getMockBuilder("Psr\Log\LoggerInterface")->disableOriginalConstructor()->getMock();
 
@@ -570,7 +570,7 @@ class GeoBlockingKernelRequestListenerTest extends \PHPUnit_Framework_TestCase{
     	$parameters['allow_search_bots'] = true;
     	$eventBlockMock = $this->getMockBuilder("Symfony\Component\HttpKernel\Event\GetResponseEvent")->disableOriginalConstructor()->getMock();
     	$requestMock = $this->getMockBuilder("Symfony\Component\HttpFoundation\Request")->disableOriginalConstructor()->getMock();
-    	$userMock = $this->getMockBuilder("FOS\UserBundle\Model\UserInterface")->disableOriginalConstructor()->getMock();
+    	$userMock = $this->getMockBuilder("Symfony\Component\Security\Core\User\UserInterface")->disableOriginalConstructor()->getMock();
     	$lookUpMock = $this->getMockBuilder("Azine\GeoBlockingBundle\Adapter\DefaultLookupAdapter")->getMock();
     	$loggerMock = $this->getMockBuilder("Psr\Log\LoggerInterface")->disableOriginalConstructor()->getMock();
 
@@ -602,7 +602,7 @@ class GeoBlockingKernelRequestListenerTest extends \PHPUnit_Framework_TestCase{
     	$parameters['allow_search_bots'] = true;
     	$eventBlockMock = $this->getMockBuilder("Symfony\Component\HttpKernel\Event\GetResponseEvent")->disableOriginalConstructor()->getMock();
     	$requestMock = $this->getMockBuilder("Symfony\Component\HttpFoundation\Request")->disableOriginalConstructor()->getMock();
-    	$userMock = $this->getMockBuilder("FOS\UserBundle\Model\UserInterface")->disableOriginalConstructor()->getMock();
+    	$userMock = $this->getMockBuilder("Symfony\Component\Security\Core\User\UserInterface")->disableOriginalConstructor()->getMock();
     	$lookUpMock = $this->getMockBuilder("Azine\GeoBlockingBundle\Adapter\DefaultLookupAdapter")->getMock();
     	$loggerMock = $this->getMockBuilder("Psr\Log\LoggerInterface")->disableOriginalConstructor()->getMock();
 
@@ -635,7 +635,7 @@ class GeoBlockingKernelRequestListenerTest extends \PHPUnit_Framework_TestCase{
 
     	$eventBlockMock = $this->getMockBuilder("Symfony\Component\HttpKernel\Event\GetResponseEvent")->disableOriginalConstructor()->getMock();
     	$requestMock = $this->getMockBuilder("Symfony\Component\HttpFoundation\Request")->disableOriginalConstructor()->getMock();
-    	$userMock = $this->getMockBuilder("FOS\UserBundle\Model\UserInterface")->disableOriginalConstructor()->getMock();
+    	$userMock = $this->getMockBuilder("Symfony\Component\Security\Core\User\UserInterface")->disableOriginalConstructor()->getMock();
     	$lookUpMock = $this->getMockBuilder("Azine\GeoBlockingBundle\Adapter\DefaultLookupAdapter")->getMock();
     	$loggerMock = $this->getMockBuilder("Psr\Log\LoggerInterface")->disableOriginalConstructor()->getMock();
 
