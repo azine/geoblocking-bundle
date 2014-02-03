@@ -5,10 +5,6 @@ Symfony2 Bundle that allows you to configure geoblocking access to certain pages
 
 It adds an kernel event listener that listens for "kernel.request" events and uses the php geoip module to identify the country of origin of the current request and depending on the configuration displays an error-page.
 
-[![Build Status](https://travis-ci.org/azine/geoblocking-bundle.png)](https://travis-ci.org/azine/geoblocking-bundle)
-[![Total Downloads](https://poser.pugx.org/azine/geoblocking-bundle/downloads.png)](https://packagist.org/packages/azine/geoblocking-bundle)
-[![Latest Stable Version](https://poser.pugx.org/azine/geoblocking-bundle/v/stable.png)](https://packagist.org/packages/azine/geoblocking-bundle)
-
 ## Requirements
 There are no explicit requirements. BUT the default setup makes two assumptions:
 
@@ -133,3 +129,12 @@ azine_geo_blocking:
     enabled:              true 										# true|false : turn the whole bundle on/off
     lookup_adapter:       your.own.implementation.of.lookup.adapter	# id of the lookup-adapter you would like to use
 ``` 
+
+
+
+## Build-Status ec.
+[![Build Status](https://travis-ci.org/azine/geoblocking-bundle.png)](https://travis-ci.org/azine/geoblocking-bundle)
+[![Total Downloads](https://poser.pugx.org/azine/geoblocking-bundle/downloads.png)](https://packagist.org/packages/azine/geoblocking-bundle)
+[![Latest Stable Version](https://poser.pugx.org/azine/geoblocking-bundle/v/stable.png)](https://packagist.org/packages/azine/geoblocking-bundle)
+[![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/azine/geoblocking-bundle/badges/quality-score.png?s=c6d9068893471309c3de0cadd2cf9f8f51804c91)](https://scrutinizer-ci.com/g/azine/geoblocking-bundle/)
+[![Code Coverage](https://scrutinizer-ci.com/g/azine/geoblocking-bundle/badges/coverage.png?s=bb74d9f20c0797f3a49b57aad0ae3258666513cb)](https://scrutinizer-ci.com/g/azine/geoblocking-bundle/)
