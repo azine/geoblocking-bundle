@@ -1,19 +1,19 @@
 parameters:
-#    azine_geo_blocking.example.class: Azine\GeoBlockingBundle\Example        
+#    azine_geo_blocking.example.class: Azine\GeoBlockingBundle\Example
 
 services:
     azine_geo_blocking.kernel.request.listener:
             class: Azine\GeoBlockingBundle\EventListener\GeoBlockingKernelRequestListener
             tags:
                 - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
-            arguments: 
+            arguments:
                 templating:        "@templating"
                 lookupAdapter:     "@azine_geo_blocking_lookup_adapter"
                 logger:            "@logger"
                 container:         "@service_container"
                 parameters:
                     blockAnonOnly:       "%azine_geo_blocking_block_anonymouse_users_only%"
-                    countryWhitelist:    "%azine_geo_blocking_countries_whitelist%"   
+                    countryWhitelist:    "%azine_geo_blocking_countries_whitelist%"
                     countryBlacklist:    "%azine_geo_blocking_countries_blacklist%"
                     routeWhitelist:      "%azine_geo_blocking_routes_whitelist%"
                     routeBlacklist:      "%azine_geo_blocking_routes_blacklist%"
@@ -23,13 +23,13 @@ services:
                     enabled:             "%azine_geo_blocking_enabled%"
                     logBlockedRequests:  "%azine_geo_blocking_logBlockedRequests%"
                     ip_whitelist:        "%azine_geo_blocking_ip_whitelist%"
-                    allow_search_bots:   "%azine_geo_blocking_allow_search_bots%"      
+                    allow_search_bots:   "%azine_geo_blocking_allow_search_bots%"
                     search_bot_domains: "%azine_geo_blocking_search_bot_domains%"
-            
-    azine_geo_blocking.default.lookup.adapter:  
-            class: Azine\GeoBlockingBundle\Adapter\DefaultLookupAdapter      
 
-    azine_geo_blocking.maxmind.lookup.adapter:  
-            class: Azine\GeoBlockingBundle\Adapter\MaxmindLookupAdapter      
-            arguments: 
+    azine_geo_blocking.default.lookup.adapter:
+            class: Azine\GeoBlockingBundle\Adapter\DefaultLookupAdapter
+
+    azine_geo_blocking.maxmind.lookup.adapter:
+            class: Azine\GeoBlockingBundle\Adapter\MaxmindLookupAdapter
+            arguments:
                 container:  "@service_container"

@@ -1,129 +1,135 @@
 <?php
-namespace Azine\EmailBundle\Tests\DependencyInjection;
+namespace Azine\GeoBlockingBundle\Tests\DependencyInjection;
 
 use Azine\GeoBlockingBundle\DependencyInjection\AzineGeoBlockingExtension;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Yaml\Parser;
 
-class AzineGeoBlockingBundleTest extends \PHPUnit_Framework_TestCase{
-	/** @var ContainerBuilder */
-	protected $configuration;
+class AzineGeoBlockingExtensionTest extends \PHPUnit_Framework_TestCase
+{
+    /** @var ContainerBuilder */
+    protected $configuration;
 
-	/**
-	 * This should not throw an exception
-	 */
-	public function testMinimalConfig(){
-		$loader = new AzineGeoBlockingExtension();
-		$config = $this->getMinimalConfig();
-		$loader->load(array($config), new ContainerBuilder());
-	}
+    /**
+     * This should not throw an exception
+     */
+    public function testMinimalConfig()
+    {
+        $loader = new AzineGeoBlockingExtension();
+        $config = $this->getMinimalConfig();
+        $loader->load(array($config), new ContainerBuilder());
+    }
 
-	/**
-	 * This should not throw an exception
-	 */
-	public function testFullConfig(){
-		$loader = new AzineGeoBlockingExtension();
-		$config = $this->getFullConfig();
-		$loader->load(array($config), new ContainerBuilder());
-	}
+    /**
+     * This should not throw an exception
+     */
+    public function testFullConfig()
+    {
+        $loader = new AzineGeoBlockingExtension();
+        $config = $this->getFullConfig();
+        $loader->load(array($config), new ContainerBuilder());
+    }
 
-	public function testCustomConfigurationWithWhiteList(){
-		$this->configuration = new ContainerBuilder();
-		$loader = new AzineGeoBlockingExtension();
-		$config = $this->getFullConfig();
-		$config['countries']['whitelist'][]		= 'UK';
-		$config['countries']['whitelist'][]		= 'CH';
-		$config['countries']['whitelist'][]		= 'DE';
-		$config['countries']['blacklist'][]		= 'RU';
-		$config['countries']['blacklist'][]		= 'CN';
-		$config['routes']['whitelist'][]			= 'some_allowed_route';
-		$config['routes']['blacklist'][]			= 'some_blocked_route';
-		$config['access_denied_view']			= 'AcmeFooBundle:Geoblocking:accessDenied.html.twig';
-		$config['block_anonymouse_users_only'] 	= false;
-		$config['login_route']					= 'the_login_route';
-		$config['lookup_adapter'] 				= 'service.name.of.lookup.adapter';
-		$config['allow_private_ips'] 			= false;
+    public function testCustomConfigurationWithWhiteList()
+    {
+        $this->configuration = new ContainerBuilder();
+        $loader = new AzineGeoBlockingExtension();
+        $config = $this->getFullConfig();
+        $config['countries']['whitelist'][]		= 'UK';
+        $config['countries']['whitelist'][]		= 'CH';
+        $config['countries']['whitelist'][]		= 'DE';
+        $config['countries']['blacklist'][]		= 'RU';
+        $config['countries']['blacklist'][]		= 'CN';
+        $config['routes']['whitelist'][]			= 'some_allowed_route';
+        $config['routes']['blacklist'][]			= 'some_blocked_route';
+        $config['access_denied_view']			= 'AcmeFooBundle:Geoblocking:accessDenied.html.twig';
+        $config['block_anonymouse_users_only'] 	= false;
+        $config['login_route']					= 'the_login_route';
+        $config['lookup_adapter'] 				= 'service.name.of.lookup.adapter';
+        $config['allow_private_ips'] 			= false;
 
+        $loader->load(array($config), $this->configuration);
 
-		$loader->load(array($config), $this->configuration);
+        $countryWL = $this->configuration->getParameter('azine_geo_blocking_countries_whitelist');
+        $countryBL = $this->configuration->getParameter('azine_geo_blocking_countries_blacklist');
 
-		$countryWL = $this->configuration->getParameter('azine_geo_blocking_countries_whitelist');
-		$countryBL = $this->configuration->getParameter('azine_geo_blocking_countries_blacklist');
+        $this->assertContains("UK", $countryWL);
+        $this->assertContains("DE", $countryWL);
+        $this->assertContains("CH", $countryWL);
+        $this->assertNotContains("RU", $countryWL);
+        $this->assertNotContains("CN", $countryWL);
 
-		$this->assertContains("UK", $countryWL);
-		$this->assertContains("DE", $countryWL);
-		$this->assertContains("CH", $countryWL);
-		$this->assertNotContains("RU", $countryWL);
-		$this->assertNotContains("CN", $countryWL);
+        // if a whiteList is present, the blacklist is cleared and ignored
+        $this->assertEmpty($countryBL);
 
-		// if a whiteList is present, the blacklist is cleared and ignored
-		$this->assertEmpty($countryBL);
+        $routeWL = $this->configuration->getParameter('azine_geo_blocking_routes_whitelist');
+        $routeBL = $this->configuration->getParameter('azine_geo_blocking_routes_blacklist');
 
-		$routeWL = $this->configuration->getParameter('azine_geo_blocking_routes_whitelist');
-		$routeBL = $this->configuration->getParameter('azine_geo_blocking_routes_blacklist');
+        $this->assertContains("some_allowed_route", $routeWL);
+        $this->assertNotContains("some_blocked_route", $routeWL);
+        // if a whiteList is present, the blacklist is cleared and ignored
+        $this->assertEmpty($routeBL);
 
-		$this->assertContains("some_allowed_route", $routeWL);
-		$this->assertNotContains("some_blocked_route", $routeWL);
-		// if a whiteList is present, the blacklist is cleared and ignored
-		$this->assertEmpty($routeBL);
+        $this->assertParameter('AcmeFooBundle:Geoblocking:accessDenied.html.twig',	'azine_geo_blocking_access_denied_view');
+        $this->assertParameter(false,	'azine_geo_blocking_block_anonymouse_users_only');
+        $this->assertParameter('the_login_route',	'azine_geo_blocking_login_route');
+        $this->assertAlias('service.name.of.lookup.adapter',	'azine_geo_blocking_lookup_adapter');
+        $this->assertParameter(false,	'azine_geo_blocking_allow_private_ips');
+    }
 
-		$this->assertParameter('AcmeFooBundle:Geoblocking:accessDenied.html.twig',	'azine_geo_blocking_access_denied_view');
-		$this->assertParameter(false,	'azine_geo_blocking_block_anonymouse_users_only');
-		$this->assertParameter('the_login_route',	'azine_geo_blocking_login_route');
-		$this->assertAlias('service.name.of.lookup.adapter',	'azine_geo_blocking_lookup_adapter');
-		$this->assertParameter(false,	'azine_geo_blocking_allow_private_ips');
-	}
+    public function testCustomConfigurationWithBlackList()
+    {
+        $this->configuration = new ContainerBuilder();
+        $loader = new AzineGeoBlockingExtension();
+        $config = $this->getFullConfig();
+        $config['countries']['blacklist'][]		= 'RU';
+        $config['countries']['blacklist'][]		= 'CN';
+        $config['routes']['blacklist']			= array('some_blocked_route');
+        $config['routes']['whitelist']			= array();
 
-	public function testCustomConfigurationWithBlackList(){
-		$this->configuration = new ContainerBuilder();
-		$loader = new AzineGeoBlockingExtension();
-		$config = $this->getFullConfig();
-		$config['countries']['blacklist'][]		= 'RU';
-		$config['countries']['blacklist'][]		= 'CN';
-		$config['routes']['blacklist']			= array('some_blocked_route');
-		$config['routes']['whitelist']			= array();
+        $loader->load(array($config), $this->configuration);
 
-		$loader->load(array($config), $this->configuration);
+        $countryWL = $this->configuration->getParameter('azine_geo_blocking_countries_whitelist');
+        $countryBL = $this->configuration->getParameter('azine_geo_blocking_countries_blacklist');
 
-		$countryWL = $this->configuration->getParameter('azine_geo_blocking_countries_whitelist');
-		$countryBL = $this->configuration->getParameter('azine_geo_blocking_countries_blacklist');
+        $this->assertContains("RU", $countryBL);
+        $this->assertContains("CN", $countryBL);
+        // if the whiteList is empty, the blacklist is not cleared
+        $this->assertEmpty($countryWL);
 
-		$this->assertContains("RU", $countryBL);
-		$this->assertContains("CN", $countryBL);
-		// if the whiteList is empty, the blacklist is not cleared
-		$this->assertEmpty($countryWL);
+        $routeWL = $this->configuration->getParameter('azine_geo_blocking_routes_whitelist');
+        $routeBL = $this->configuration->getParameter('azine_geo_blocking_routes_blacklist');
 
-		$routeWL = $this->configuration->getParameter('azine_geo_blocking_routes_whitelist');
-		$routeBL = $this->configuration->getParameter('azine_geo_blocking_routes_blacklist');
+        $this->assertNotContains("some_allowed_route", $routeBL);
+        $this->assertContains("some_blocked_route", $routeBL);
+        // if a whiteList is present, the blacklist is cleared and ignored
+        $this->assertEmpty($routeWL);
 
-		$this->assertNotContains("some_allowed_route", $routeBL);
-		$this->assertContains("some_blocked_route", $routeBL);
-		// if a whiteList is present, the blacklist is cleared and ignored
-		$this->assertEmpty($routeWL);
+    }
 
-	}
-
-	/**
-	 * Get the minimal config
-	 * @return array
-	 */
-	protected function getMinimalConfig(){
-		$yaml = <<<EOF
+    /**
+     * Get the minimal config
+     * @return array
+     */
+    protected function getMinimalConfig()
+    {
+        $yaml = <<<EOF
 # true|false : turn the whole bundle on/off
 enabled:              true
 EOF;
-		$parser = new Parser();
+        $parser = new Parser();
 
-		return $parser->parse($yaml);
-	}
+        return $parser->parse($yaml);
+    }
 
 
-	/**
-	 * Get a full config for this bundle
-	 */
-	protected function getFullConfig(){
-		$yaml = <<<EOF
+    /**
+     * Get a full config for this bundle
+     */
+    protected function getFullConfig()
+    {
+        $yaml = <<<EOF
 # true|false : turn the whole bundle on/off
 enabled:              true
 
@@ -165,28 +171,31 @@ routes:
     # list of routes, that always should be blocked for access from unliked locations.
     blacklist: []
 EOF;
-		$parser = new Parser();
+        $parser = new Parser();
 
-		return $parser->parse($yaml);
-	}
+        return $parser->parse($yaml);
+    }
 
-	/**
-	 * @param string $value
-	 * @param string $key
-	 */
-	private function assertAlias($value, $key){
-		$this->assertEquals($value, (string) $this->configuration->getAlias($key), sprintf('%s alias is correct', $key));
-	}
+    /**
+     * @param string $value
+     * @param string $key
+     */
+    private function assertAlias($value, $key)
+    {
+        $this->assertEquals($value, (string) $this->configuration->getAlias($key), sprintf('%s alias is correct', $key));
+    }
 
-	/**
-	 * @param mixed  $value
-	 * @param string $key
-	 */
-	private function assertParameter($value, $key){
-		$this->assertEquals($value, $this->configuration->getParameter($key), sprintf('%s parameter is correct', $key));
-	}
+    /**
+     * @param mixed  $value
+     * @param string $key
+     */
+    private function assertParameter($value, $key)
+    {
+        $this->assertEquals($value, $this->configuration->getParameter($key), sprintf('%s parameter is correct', $key));
+    }
 
-	protected function tearDown(){
-		unset($this->configuration);
-	}
+    protected function tearDown()
+    {
+        unset($this->configuration);
+    }
 }
