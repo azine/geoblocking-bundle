@@ -65,6 +65,13 @@ class GeoBlockingKernelRequestListener
             return;
         }
 
+        // allow access it the "geoblocking_allow_cookie" is set to true
+        $alloweByCookie = $this->configParams['allow_by_cookie'];
+
+        if($alloweByCookie && $request->cookies->get($this->configParams['allow_by_cookie_name'], false)){
+        	return;
+        }
+
         $visitorAddress = $request->getClientIp();
 
         // check if the visitors IP is a private IP => the request comes from the same subnet as the server or the server it self.

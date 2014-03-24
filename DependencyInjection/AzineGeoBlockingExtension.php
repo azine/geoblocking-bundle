@@ -49,6 +49,8 @@ class AzineGeoBlockingExtension extends Extension
         $container->setParameter($prefix."logBlockedRequests", $config['logBlockedRequests']);
         $container->setParameter($prefix."allow_search_bots", $config['allow_search_bots']);
         $container->setParameter($prefix."search_bot_domains", $config['search_bot_domains']);
+        $container->setParameter($prefix."allow_by_cookie", $config['allow_by_cookie']);
+        $container->setParameter($prefix."allow_by_cookie_name", $config['allow_by_cookie_name']);
 
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');

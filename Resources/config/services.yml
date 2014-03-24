@@ -24,7 +24,9 @@ services:
                     logBlockedRequests:  "%azine_geo_blocking_logBlockedRequests%"
                     ip_whitelist:        "%azine_geo_blocking_ip_whitelist%"
                     allow_search_bots:   "%azine_geo_blocking_allow_search_bots%"
-                    search_bot_domains: "%azine_geo_blocking_search_bot_domains%"
+                    search_bot_domains:  "%azine_geo_blocking_search_bot_domains%"
+                    allow_by_cookie:     "%azine_geo_blocking_allow_by_cookie%"
+                    allow_by_cookie_name: "%azine_geo_blocking_allow_by_cookie_name%"
 
     azine_geo_blocking.default.lookup.adapter:
             class: Azine\GeoBlockingBundle\Adapter\DefaultLookupAdapter

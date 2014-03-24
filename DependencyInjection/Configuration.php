@@ -44,6 +44,9 @@ class Configuration implements ConfigurationInterface
                         ->variableNode('whitelist')->defaultValue(array('fos_user_security_login', 'fos_user_security_login_check', 'fos_user_security_logout'))->info("list of routes, that never should be blocked for access from unliked locations (e.g. the login-routes).")->end()
                     ->end()
                 ->end()// end routes
+                ->booleanNode	("allow_by_cookie")				->defaultFalse()->info("true|false : turn the 'allow by cookie' feature on/off")->end()
+                ->scalarNode	("allow_by_cookie_name")		->defaultValue("geoblocking_allow_cookie")->info("name of the 'allow_by_cookie'-cookie")->end()
+
             ->end();
 
         return $treeBuilder;

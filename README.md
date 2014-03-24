@@ -117,9 +117,57 @@ azine_geo_blocking:
         blacklist:  # e.g. "US","CN" etc. => access is denied to visitors from these countries
         	- US
         	- CN
+        	
+    # You can enable/disable the feature to check for the "geoblocking_allow_cookie" to either allow or block the user. 
+    allow_by_cookie: false 
     
+    # You can change the name of the cookie that should be checked. 
+    # If the value of the cookie evaluates to true in php, the user is allowed to see the pages. see http://www.php.net/manual/en/language.types.boolean.php
+    # Cookie-Value => User allowed
+    # true|1|2|-1  :   yes
+    # false|0|null :   no
+    # 12.3.2014    :   yes
+    # 'no-way'     :   yes 
+    allow_by_cookie_name: "geoblocking_allow_cookie"
+      
 ```
 
+## Allow user by cookie
+There are special cases where you want to allow visitors full access to your site even though they are not (yet) registered. For example allow an invited user to see all the pages, before signing up.
+
+To allow this, you can set a coockie (named: geoblocking_allow_cookie, value true) that disables the geoblocking for a while.
+
+To allow "invited" users to check out the site before registering, add this code to the action handling the first page view of an invited user to set the cookie:
+
+```
+// src/Acme/YourBundle/Controller/InvitationController.php
+...
+    public function handleClickOnInvitationLinkAction(Request $request){
+        ...
+        // do your magic here 
+        ...
+        
+        // render the view welcoming the invited user
+        $response = $this->container->get('templating')->renderResponse('AcmeYourBundle:Invitation:welcomeInvitedUser.html.twig.');
+        
+        // set the geoblocking_allow_cookie, so the invited user can take a look arround before registering.
+        $response->headers->setCookie(new Cookie("geoblocking_allow_cookie", true, new \DateTime("2 days")));
+        return $response;
+    }
+```
+
+Update your config.yml to enable the "allow_by_cookie"-feature and to allow the route that sets the cookie
+```
+// app/config/config.yml
+azine_geo_blocking:
+    ...
+    routes:
+        whitelist:
+            ...
+            - public_handle_click_on_invitation_link
+            
+    allow_by_cookie: true  
+```
 
 ## Alternative GeoIpLookupAdapter
 You can create your own implementation of [Adapter\GeoIpLookupAdapterInterface.php](Adapter/GeoIpLookupAdapterInterface.php), define it as service in your service.yml or service.xml and set the service-id as lookup_adapter in the config.yml:
