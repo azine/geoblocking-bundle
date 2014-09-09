@@ -1,20 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file source-language="en" datatype="plaintext" original="file.ext">
+  <file date="2014-09-09T23:16:03Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
+    <header>
+      <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
+      <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
+    </header>
     <body>
-      <trans-unit id="1" resname="access.denied.for.anon.user.message.%country%">
+      <trans-unit id="bbd7da7184b7fd96343db9c6bf53b37629dfe779" resname="access.denied.for.anon.user.message.%country%">
         <source>access.denied.for.anon.user.message</source>
         <target>Access to this service is not allowed from your current location (%country%), unless you are already a registered user.</target>
       </trans-unit>
-      <trans-unit id="2" resname="access.denied.login.message.%loginUrl%">
+      <trans-unit id="7e5a506b5aa7120ec691203df97238ba132fd8cf" resname="access.denied.login.message.%loginUrl%">
         <source>access.denied.login.message.%loginUrl%</source>
         <target><![CDATA[For registered users: <a href="%loginUrl%">please login here</a>.]]></target>
       </trans-unit>
-      <trans-unit id="3" resname="access.denied.message.%country%">
+      <trans-unit id="69a314f17a12b5adcfb123fa9f9df34cec163c7e" resname="access.denied.message.%country%">
         <source>access.denied.message</source>
         <target>Access to this service is not allowed from your current location (%country%).</target>
       </trans-unit>
     </body>
   </file>
 </xliff>
-
