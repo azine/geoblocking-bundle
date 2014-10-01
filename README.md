@@ -181,6 +181,7 @@ azine_geo_blocking:
 
 
 ## Build-Status ec.
+
 [![Build Status](https://travis-ci.org/azine/geoblocking-bundle.png)](https://travis-ci.org/azine/geoblocking-bundle)
 [![Total Downloads](https://poser.pugx.org/azine/geoblocking-bundle/downloads.png)](https://packagist.org/packages/azine/geoblocking-bundle)
 [![Latest Stable Version](https://poser.pugx.org/azine/geoblocking-bundle/v/stable.png)](https://packagist.org/packages/azine/geoblocking-bundle)
