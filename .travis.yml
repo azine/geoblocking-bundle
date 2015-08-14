@@ -35,11 +35,6 @@ addons:
     - libgeoip-dev
 
 before_script: 
-  - ls -l /usr/share/GeoIP
-  - wget -N http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz
-  - gunzip GeoLiteCity.dat.gz
-  - sudo mkdir -p /usr/share/GeoIP
-  - sudo mv GeoLiteCity.dat /usr/share/GeoIP/GeoIPCity.dat
   - pecl install geoip
   - composer require symfony/framework-bundle:${SYMFONY_VERSION} --no-update --dev -v
   - composer -vvv install --dev --prefer-source
