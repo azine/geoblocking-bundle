@@ -25,11 +25,16 @@ matrix:
       - php: 5.4
         env: SYMFONY_VERSION=dev-master
 
+sudo: false
+
+addons:
+  apt:
+    packages:
+    - geoip-bin
+    - geoip-database
+    - libgeoip-dev
 
 before_script: 
-  - sudo apt-get install geoip-bin
-  - sudo apt-get install geoip-database
-  - sudo apt-get install libgeoip-dev
   - ls -l /usr/share/GeoIP
   - wget -N http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz
   - gunzip GeoLiteCity.dat.gz
