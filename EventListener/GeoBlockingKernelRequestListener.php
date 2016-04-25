@@ -5,6 +5,7 @@ use Symfony\Component\DependencyInjection\Container;
 
 use Psr\Log\LoggerInterface;
 
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 use Symfony\Component\HttpKernel\HttpKernelInterface;
@@ -157,7 +158,7 @@ class GeoBlockingKernelRequestListener
     {
         // render the "sorry you are not allowed here"-page
         $parameters = array('loginRoute' => $this->configParams['loginRoute'], 'country' => $country);
-        $event->setResponse($this->templating->renderResponse($this->configParams['blockedPageView'], $parameters));
+        $event->setResponse($this->templating->renderResponse($this->configParams['blockedPageView'], $parameters, new Response('', Response::HTTP_FORBIDDEN)));
         $event->stopPropagation();
 
         if ($this->configParams['logBlockedRequests']) {
