@@ -55,13 +55,17 @@ class GeoBlockingKernelRequestListenerTest extends \PHPUnit_Framework_TestCase
         $containerMock->expects($this->once())->method("get")->will($this->returnValue($securityContextMock));
 
         $eventBlockMock->expects($this->once())->method("getRequestType")->will($this->returnValue(HttpKernelInterface::MASTER_REQUEST));
-        $eventBlockMock->expects($this->once())->method("setResponse");
+        $eventBlockMock->expects($this->once())->method("setResponse")->will($this->returnCallback(array($this, 'checkResponseCode')));
         $eventBlockMock->expects($this->once())->method("stopPropagation");
         $requestMock->expects($this->once())->method("getClientIp")->will($this->returnValue($this->usIP));
         $eventBlockMock->expects($this->once())->method("getRequest")->will($this->returnValue($requestMock));
 
         $geoBlockingListener = new GeoBlockingKernelRequestListener($this->getTemplatingMock(true), new DefaultLookupAdapter(), $loggerMock, $containerMock, $parameters);
         $geoBlockingListener->onKernelRequest($eventBlockMock);
+    }
+
+    public function checkResponseCode(Response $response){
+        $this->assertEquals(Response::HTTP_FORBIDDEN, $response->getStatusCode());
     }
 
     public function testOnKernelRequestGeoBlocking_SubRequest()
@@ -98,7 +102,7 @@ class GeoBlockingKernelRequestListenerTest extends \PHPUnit_Framework_TestCase
 
         $eventBlockMock = $this->getMockBuilder("Symfony\Component\HttpKernel\Event\GetResponseEvent")->disableOriginalConstructor()->getMock();
         $eventBlockMock->expects($this->once())->method("getRequestType")->will($this->returnValue(HttpKernelInterface::MASTER_REQUEST));
-        $eventBlockMock->expects($this->once())->method("setResponse");
+        $eventBlockMock->expects($this->once())->method("setResponse")->will($this->returnCallback(array($this, 'checkResponseCode')));
         $eventBlockMock->expects($this->once())->method("stopPropagation");
         $requestMock->expects($this->once())->method("getClientIp")->will($this->returnValue($this->usIP));
         $eventBlockMock->expects($this->once())->method("getRequest")->will($this->returnValue($requestMock));
@@ -123,7 +127,7 @@ class GeoBlockingKernelRequestListenerTest extends \PHPUnit_Framework_TestCase
         $containerMock->expects($this->once())->method("get")->will($this->returnValue($securityContextMock));
 
         $eventBlockMock->expects($this->once())->method("getRequestType")->will($this->returnValue(HttpKernelInterface::MASTER_REQUEST));
-        $eventBlockMock->expects($this->once())->method("setResponse");
+        $eventBlockMock->expects($this->once())->method("setResponse")->will($this->returnCallback(array($this, 'checkResponseCode')));
         $requestMock->expects($this->once())->method("getClientIp")->will($this->returnValue($this->usIP));
         $requestMock->expects($this->once())->method("get");
         $eventBlockMock->expects($this->once())->method("stopPropagation");
@@ -215,7 +219,7 @@ class GeoBlockingKernelRequestListenerTest extends \PHPUnit_Framework_TestCase
         $requestMock->expects($this->once())->method("getClientIp")->will($this->returnValue($this->chIP));
         $requestMock->expects($this->once())->method("get")->with("_route", null, false)->will($this->returnValue("notAllowedRoute"));
         $lookUpMock->expects($this->once())->method("getCountry");
-        $eventBlockMock->expects($this->once())->method("setResponse");
+        $eventBlockMock->expects($this->once())->method("setResponse")->will($this->returnCallback(array($this, 'checkResponseCode')));
         $eventBlockMock->expects($this->once())->method("stopPropagation");
 
         $geoBlockingListener = new GeoBlockingKernelRequestListener($this->getTemplatingMock(true), $lookUpMock, $loggerMock, $containerMock, $parameters);
@@ -279,7 +283,7 @@ class GeoBlockingKernelRequestListenerTest extends \PHPUnit_Framework_TestCase
         $requestMock->expects($this->once())->method("getClientIp")->will($this->returnValue($this->chIP));
         $requestMock->expects($this->once())->method("get")->with("_route", null, false)->will($this->returnValue("notAllowedRoute"));
         $lookUpMock->expects($this->once())->method("getCountry");
-        $eventBlockMock->expects($this->once())->method("setResponse");
+        $eventBlockMock->expects($this->once())->method("setResponse")->will($this->returnCallback(array($this, 'checkResponseCode')));
         $eventBlockMock->expects($this->once())->method("stopPropagation");
 
         $geoBlockingListener = new GeoBlockingKernelRequestListener($this->getTemplatingMock(true), $lookUpMock, $loggerMock, $containerMock, $parameters);
@@ -374,7 +378,7 @@ class GeoBlockingKernelRequestListenerTest extends \PHPUnit_Framework_TestCase
         $requestMock->expects($this->once())->method("getClientIp")->will($this->returnValue($this->usIP));
         $requestMock->expects($this->once())->method("get")->with("_route", null, false)->will($this->returnValue("noWhiteListRoute"));
         $lookUpMock->expects($this->once())->method("getCountry")->with($this->usIP)->will($this->returnValue("US"));
-        $eventBlockMock->expects($this->once())->method("setResponse");
+        $eventBlockMock->expects($this->once())->method("setResponse")->will($this->returnCallback(array($this, 'checkResponseCode')));
         $eventBlockMock->expects($this->once())->method("stopPropagation");
 
         $geoBlockingListener = new GeoBlockingKernelRequestListener($this->getTemplatingMock(true), $lookUpMock, $loggerMock, $containerMock, $parameters);
@@ -407,7 +411,7 @@ class GeoBlockingKernelRequestListenerTest extends \PHPUnit_Framework_TestCase
         $requestMock->expects($this->once())->method("getClientIp")->will($this->returnValue($this->usIP));
         $requestMock->expects($this->once())->method("get")->with("_route", null, false)->will($this->returnValue("random_route"));
         $lookUpMock->expects($this->once())->method("getCountry")->with($this->usIP)->will($this->returnValue("US"));
-        $eventBlockMock->expects($this->once())->method("setResponse");
+        $eventBlockMock->expects($this->once())->method("setResponse")->will($this->returnCallback(array($this, 'checkResponseCode')));
         $eventBlockMock->expects($this->once())->method("stopPropagation");
 
         $geoBlockingListener = new GeoBlockingKernelRequestListener($this->getTemplatingMock(true), $lookUpMock, $loggerMock, $containerMock, $parameters);
@@ -535,7 +539,7 @@ class GeoBlockingKernelRequestListenerTest extends \PHPUnit_Framework_TestCase
         $requestMock->expects($this->once())->method("getClientIp")->will($this->returnValue($this->usIP));
         $requestMock->expects($this->once())->method("get")->with("_route", null, false)->will($this->returnValue("random_route"));
         $lookUpMock->expects($this->once())->method("getCountry")->with($this->usIP)->will($this->returnValue("US"));
-        $eventBlockMock->expects($this->once())->method("setResponse");
+        $eventBlockMock->expects($this->once())->method("setResponse")->will($this->returnCallback(array($this, 'checkResponseCode')));
         $eventBlockMock->expects($this->once())->method("stopPropagation");
 
         $loggerMock->expects($this->once())->method("warning");
@@ -574,7 +578,7 @@ class GeoBlockingKernelRequestListenerTest extends \PHPUnit_Framework_TestCase
         $requestMock->expects($this->exactly(2))->method("getClientIp")->will($this->returnValue($this->usIP));
         $requestMock->expects($this->exactly(2))->method("get")->with("_route", null, false)->will($this->returnValue("random_route"));
         $lookUpMock->expects($this->once())->method("getCountry")->with($this->usIP)->will($this->returnValue("US"));
-        $eventBlockMock->expects($this->once())->method("setResponse");
+        $eventBlockMock->expects($this->once())->method("setResponse")->will($this->returnCallback(array($this, 'checkResponseCode')));
         $eventBlockMock->expects($this->once())->method("stopPropagation");
 
         $loggerMock->expects($this->exactly(2))->method("warning");
@@ -673,7 +677,7 @@ class GeoBlockingKernelRequestListenerTest extends \PHPUnit_Framework_TestCase
         $requestMock->expects($this->once())->method("get")->with("_route", null, false)->will($this->returnValue("random_route"));
         $lookUpMock->expects($this->once())->method("getCountry")->with($this->usIP)->will($this->returnValue("US"));
 
-        $eventBlockMock->expects($this->once())->method("setResponse");
+        $eventBlockMock->expects($this->once())->method("setResponse")->will($this->returnCallback(array($this, 'checkResponseCode')));
         $eventBlockMock->expects($this->once())->method("stopPropagation");
 
         $geoBlockingListener = new GeoBlockingKernelRequestListener($this->getTemplatingMock(true), $lookUpMock, $loggerMock, $containerMock, $parameters);
