@@ -755,7 +755,7 @@ class GeoBlockingKernelRequestListenerTest extends \PHPUnit_Framework_TestCase
     {
         $templatingMock = $this->getMockBuilder("Symfony\Bundle\FrameworkBundle\Templating\EngineInterface")->disableOriginalConstructor()->getMock();
         if ($showBlockingPage) {
-            $templatingMock->expects($this->once())->method("renderResponse")->with()->will($this->returnValue(new Response()));
+            $templatingMock->expects($this->once())->method("renderResponse")->with()->will($this->returnValue(new Response('', Response::HTTP_FORBIDDEN)));
         } else {
             $templatingMock->expects($this->never())->method("renderResponse");
         }
