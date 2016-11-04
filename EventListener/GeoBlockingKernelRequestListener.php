@@ -59,7 +59,7 @@ class GeoBlockingKernelRequestListener
 
         $request = $event->getRequest();
         // check if blocking authenticated users is enabled
-        $authenticated = $this->container->get('security.context')->getToken()->getUser() instanceof UserInterface;
+        $authenticated = $this->container->get('security.token_storage')->getToken()->getUser() instanceof UserInterface;
         if ($this->configParams['blockAnonOnly'] && $authenticated) {
             $this->logger->info("azine_geoblocking_bundle: allowed logged-in user");
 
