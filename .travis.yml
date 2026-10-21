@@ -1,48 +1,30 @@
 language: php
-
 php:
-  - 5.5
-  - 5.6
-
+- 8.5.12
 env:
-  - SYMFONY_VERSION=2.6.*
-  - SYMFONY_VERSION=2.7.*
-  - SYMFONY_VERSION=2.8.*
-  - SYMFONY_VERSION=3.0.*
-  - SYMFONY_VERSION=3.1.*
-  - SYMFONY_VERSION=dev-master
-
+- SYMFONY_VERSION=2.6.*
+- SYMFONY_VERSION=2.7.*
+- SYMFONY_VERSION=2.8.*
+- SYMFONY_VERSION=3.0.*
+- SYMFONY_VERSION=3.1.*
+- SYMFONY_VERSION=dev-master
 matrix:
   allow_failures:
-    - env: SYMFONY_VERSION=dev-master
-
-  exclude:
-      - php: 5.3
-        env: SYMFONY_VERSION=dev-master
-      - php: 5.4
-        env: SYMFONY_VERSION=dev-master
-
+  - env: SYMFONY_VERSION=dev-master
 sudo: false
-
 addons:
   apt:
     packages:
     - geoip-bin
     - geoip-database
     - libgeoip-dev
-
-before_script: 
-  - pecl install geoip
-  - composer require symfony/framework-bundle:${SYMFONY_VERSION} --no-update --dev -v
-  - composer -vvv install --dev --prefer-source
-
-script: 
-  - phpunit --coverage-text --coverage-clover=coverage.clover /home/travis/build/azine/geoblocking-bundle/Tests/
-  - wget https://scrutinizer-ci.com/ocular.phar
-  - php ocular.phar code-coverage:upload --format=php-clover coverage.clover
-
+before_script:
+- pecl install geoip
+- composer require symfony/framework-bundle:${SYMFONY_VERSION} --no-update --dev -v
+- composer -vvv install --dev --prefer-source
+script:
+- phpunit --coverage-text --coverage-clover=coverage.clover /home/travis/build/azine/geoblocking-bundle/Tests/
+- wget https://scrutinizer-ci.com/ocular.phar
+- php ocular.phar code-coverage:upload --format=php-clover coverage.clover
 notifications:
   email: travis@azine-it.ch
-
-
-

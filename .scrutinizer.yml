@@ -7,3 +7,8 @@ tools:
     external_code_coverage:
         timeout: 1200 # Timeout 20min in seconds.
     
+
+build:
+    environment:
+        php:
+            version: '8.5.12'

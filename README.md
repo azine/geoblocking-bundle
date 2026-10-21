@@ -6,6 +6,8 @@ Symfony2 Bundle that allows you to configure geoblocking access to certain pages
 It adds an kernel event listener that listens for "kernel.request" events and uses the php geoip module to identify the country of origin of the current request and depending on the configuration displays an error-page.
 
 ## Requirements
+
+Requires PHP 8.5.12 or newer.
 There are no explicit requirements. BUT the default setup makes two assumptions:
 
 ##### 1. the php geoip-module is enabled on your server or you installed and configured the Maxmind/GeoIP Bundle
